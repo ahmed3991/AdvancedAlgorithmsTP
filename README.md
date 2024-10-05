@@ -69,7 +69,8 @@ import time
 
 def example_function():
     start_time = time.time()
-    # Your code here
+    # A dummy function to simulate processing
+    return sum([i ** 2 for i in range(n)])
     end_time = time.time()
     print(f"Execution time: {end_time - start_time} seconds")
 ```
@@ -89,8 +90,8 @@ from memory_profiler import profile
 
 @profile
 def example_function():
-    # Your code here
-    pass
+    # A dummy function to simulate processing
+    return sum([i ** 2 for i in range(n)])
 ```
 
 #### Step 3: Run the Profiler
@@ -128,8 +129,11 @@ def time_and_space_profiler(func):
 # Example usage:
 @time_and_space_profiler
 def example_function():
-    # Your code here
-    pass
+    # A dummy function to simulate processing
+    return sum([i ** 2 for i in range(n)])
+
+# Test the decorator
+example_function(1000000)
 ```
 
 This decorator can be applied to any function to automatically report time and memory usage when the function is run.
