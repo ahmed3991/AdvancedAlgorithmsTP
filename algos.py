@@ -1,7 +1,11 @@
 from complexity import time_and_space_profiler
-val = [1,10,15,16,18,22,66,100,254,321,458]
+import numpy as np
 
-target = 0
+np.random.seed(42)
+
+val = np.sort(np.random.randint(1,10000000,size=1001))
+
+target = np.random.randint(1,10000000)
 
 @time_and_space_profiler
 def sequantial_search(val,target):
@@ -13,15 +17,41 @@ def sequantial_search(val,target):
 
 @time_and_space_profiler
 def advanced_sequantial_search(val,target):
+    comparison = 0
     for i in range(len(val)):
+        comparison+=2
         if target == val[i]: # comparision
-            return i+1
+            comparison-=1
+            break
         # add the part to stop searching when target small to the element
-        if target < val[i]:
-            return i+1
+        elif target < val[i]:
+            break
         
-    return len(val)
+    return comparison
+
+@time_and_space_profiler
+def binary_search(val,target):
+	
+    start = 0
+    end = len(val)-1
+    comparison = 1
+
+    while start < end:
+        half = (end + start)//2
+        comparison+=2
+        if target == val[half]:
+            comparison-=1
+            break
+        elif target < val[half]:
+            end = half -1
+        else:
+            start = half + 1 
+        comparison+=1
+    return comparison 
+    
 
 print(sequantial_search(val,target))
 
 print(advanced_sequantial_search(val,target))
+
+print(binary_search(val,target))
