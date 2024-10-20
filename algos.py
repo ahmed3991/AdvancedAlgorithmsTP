@@ -2,23 +2,29 @@ from complexity import time_and_space_profiler
 import numpy as np
 
 
+
 # Inialization logic
 # TODO: 30 tests should be implemented for 
 #       1000;10000;100000;1000000;10000000
 
-tests = []
-
-lenghts = [1000,10000,100000,1000000,10000000]
 np.random.seed(42)
 
-val = np.sort(np.random.randint(1,10000000,size=1000000))
+tests = []
 
-target = np.random.randint(1,10000000)
+lenghts = [1000,10000,100000,1000000]
 
-test = (val, target)
+tests_per_length = 40
 
-tests.append(test)
+for length in lenghts:
+    for _ in range(tests_per_length):
 
+        val = np.sort(np.random.randint(1,length*4,size=length))
+
+        target = np.random.randint(1,length*4)
+
+        test = (length, val, target)
+
+        tests.append(test)
 
 
 # Function definitions
@@ -66,8 +72,9 @@ def binary_search(val,target):
     return comparison 
     
 
-print(sequantial_search(val,target))
+for i , (length, val ,target) in enumerate(tests):
+    print(sequantial_search(val,target))
 
-print(advanced_sequantial_search(val,target))
+    print(advanced_sequantial_search(val,target))
 
-print(binary_search(val,target))
+    print(binary_search(val,target))
