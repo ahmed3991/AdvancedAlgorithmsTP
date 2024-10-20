@@ -1,11 +1,27 @@
 from complexity import time_and_space_profiler
 import numpy as np
 
+
+# Inialization logic
+# TODO: 30 tests should be implemented for 
+#       1000;10000;100000;1000000;10000000
+
+tests = []
+
+lenghts = [1000,10000,100000,1000000,10000000]
 np.random.seed(42)
 
-val = np.sort(np.random.randint(1,10000000,size=1001))
+val = np.sort(np.random.randint(1,10000000,size=1000000))
 
 target = np.random.randint(1,10000000)
+
+test = (val, target)
+
+tests.append(test)
+
+
+
+# Function definitions
 
 @time_and_space_profiler
 def sequantial_search(val,target):
