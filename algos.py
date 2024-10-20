@@ -1,5 +1,7 @@
 from complexity import time_and_space_profiler
+from tqdm import tqdm , trange
 import numpy as np
+import pandas as pd
 
 
 
@@ -11,16 +13,18 @@ np.random.seed(42)
 
 tests = []
 
-lenghts = [1000,10000,100000,1000000]
+#lenghts = [1000,10000,100000,1000000]
 
-tests_per_length = 40
+lenghts = np.array(range(1000,1000000,10000))
+
+tests_per_length = 1
 
 for length in lenghts:
     for _ in range(tests_per_length):
 
-        val = np.sort(np.random.randint(1,length*4,size=length))
+        val = np.sort(np.random.randint(1,4*length,size=length))
 
-        target = np.random.randint(1,length*4)
+        target = np.random.randint(1,4*length)
 
         test = (length, val, target)
 
@@ -71,10 +75,23 @@ def binary_search(val,target):
         comparison+=1
     return comparison 
     
+funcs = [sequantial_search, advanced_sequantial_search,binary_search]
 
-for i , (length, val ,target) in enumerate(tests):
-    print(sequantial_search(val,target))
+results = []
+for i , (length, val ,target) in tqdm(enumerate(tests),ncols=len(tests)):
+    
+    for func in funcs:
 
-    print(advanced_sequantial_search(val,target))
+        func_name,comparison,T, S = func(val,target)
 
-    print(binary_search(val,target))
+        results.append((i,func_name,length,comparison,T,S))
+
+
+# Printing results
+#print(results)
+
+df = pd.DataFrame(results, columns=['id_test','fuction_name','array_length','comparison','time','space'])
+
+print(df)
+
+df.to_csv('results.csv', index=False)
