@@ -4,7 +4,7 @@
 This practical session (TP) focuses on the experimental study of simple sorting algorithms (selection sort, bubble sort, and insertion sort with two variants). Here’s a structured approach to guide students in comparing these algorithms:
 
 ## 1. Learning Objectives
-- Implement simple sorting algorithms studied in tutorials.
+- Implement simple sorting algorithms studied in tutorials -TD-.
 - Compare the performance of these algorithms by measuring the number of comparisons, the number of moves, and CPU execution time.
 - Analyze the impact of the initial data arrangement (random, ascending order, descending order).
 
