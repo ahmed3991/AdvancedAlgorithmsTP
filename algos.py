@@ -15,9 +15,9 @@ tests = []
 
 #lenghts = [1000,10000,100000,1000000]
 
-lenghts = np.array(range(1000,1000000,10000))
+lenghts = np.array(range(1000,1000000,20000))
 
-tests_per_length = 1
+tests_per_length = 5
 
 for length in lenghts:
     for _ in range(tests_per_length):
@@ -40,6 +40,15 @@ def sequantial_search(val,target):
             return i+1
     
     return len(val)
+
+#@time_and_space_profiler
+#def quadratic_sequantial_search(val,target):
+#    for i in range(len(val)):
+#        for j in range(len(val)):
+#            if target == val[i]: # comparision
+#                return i+1
+#    
+#    return len(val)*len(val)
 
 @time_and_space_profiler
 def advanced_sequantial_search(val,target):
@@ -90,7 +99,7 @@ for i , (length, val ,target) in tqdm(enumerate(tests),ncols=len(tests)):
 # Printing results
 #print(results)
 
-df = pd.DataFrame(results, columns=['id_test','fuction_name','array_length','comparison','time','space'])
+df = pd.DataFrame(results, columns=['id_test','function_name','array_length','comparison','time','space'])
 
 print(df)
 
