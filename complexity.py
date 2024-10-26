@@ -19,6 +19,7 @@ def time_and_space_profiler(func):
     return wrapper
 
 # calculate the least squares to fit the complexity fucntion
+# inspired by https://github.com/Alfex4936/python-bigO-calculator
 def leastSquares(x,y,func):
     sigma_gn_squared = func(x)**2
     sigma_gn_y = func(x) * y
