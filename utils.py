@@ -3,13 +3,14 @@ import inspect
 import math
 import threading
 import time
-from typing import Callable, List
+from typing import Callable, List, Tuple, Dict
 
 import matplotlib.axes
 import matplotlib.figure
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from alive_progress import alive_bar, alive_it
 from memory_profiler import memory_usage
 
 
@@ -48,6 +49,8 @@ class Profiler:
     def __init__(self):
         self.sizes: list[int] = []
         self.samples: int = 0
+        self.__generator = None
+        self.__generator_args: List | Tuple = tuple()
         self.__functions: list[Callable] = []
         self.__fig: matplotlib.figure.Figure | None = None
         self.__axs: List[List[matplotlib.axes.Axes]] | None = None
@@ -56,6 +59,7 @@ class Profiler:
         self.__time_dataframe = pd.DataFrame()
         self.__memory_dataframe = pd.DataFrame()
         self.__dataframe_semaphore: threading.Semaphore = threading.Semaphore()
+        self.__passed_args: Dict[str, List] = dict()
 
     def add_size(self, size: int):
         self.sizes.append(size)
@@ -65,6 +69,12 @@ class Profiler:
         if samples <= 0:
             raise ValueError("Samples must be greater than 0")
         self.samples = samples
+
+    def set_generator(self, function: Callable, args: List | Tuple = None):
+        self.__generator = function
+        if not args:
+            args = tuple()
+        self.__generator_args = args
 
     def add_function(self, func):
         self.__functions.append(
@@ -83,6 +93,16 @@ class Profiler:
         return self.__functions
 
     def run(self):
+        if not self.__generator:
+            raise "No generator function supplied"
+        for s in self.sizes:
+            self.__passed_args[str(s)] = []
+            for _ in range(self.samples):
+                curr_args = self.__generator(*self.__generator_args, size=s)
+                if not curr_args:
+                    curr_args = tuple
+                self.__passed_args[str(s)].append(curr_args)
+
         self.__comparison_dataframe = pd.DataFrame({
             f"{f.__name__}_{s}": [0] * self.samples
             for f in self.__functions
@@ -99,41 +119,29 @@ class Profiler:
             for s in self.sizes
         })
 
-        lists = {str(size): [] for size in self.sizes}
-        xs = {str(size): [] for size in self.sizes}
-        for size in self.sizes:
-            for _ in range(self.samples):
-                lists[str(size)].append(
-                    np.sort(np.random.randint(0, size * 10, size)).tolist()
-                )
-                xs[str(size)].append(
-                    np.random.randint(
-                        -2 * int(math.log2(size)),
-                        10 * size + 2 * int(math.log2(size))
-                    )
-                )
-
         threads = []
         for func in self.__functions:
-            thread = threading.Thread(target=self.__runner, args=(func, lists, xs))
+            thread = threading.Thread(target=self.__runner, args=(func,))
             threads.append(thread)
             thread.start()
 
         for thread in threads:
             thread.join()
 
-    def __runner(self, func, arrays, x_values):
+    def __runner(self, func):
         threads: list[threading.Thread] = []
         for s in self.sizes:
             for i in range(self.samples):
-                thread = threading.Thread(target=self.__sub_runner, args=(func, arrays[str(s)][i], x_values[str(s)][i], i, s))
+                thread = threading.Thread(target=self.__sub_runner,
+                                          args=(func, *self.__passed_args[str(s)][i]),
+                                          kwargs={'index': i, 'size': s})
                 threads.append(thread)
-        for t in threads:
+        for t in alive_it(threads, title=f'{func.__name__}', force_tty=True):
             t.start()
             t.join()
 
-    def __sub_runner(self, func, array, x, index, size):
-        result = func(array, x)
+    def __sub_runner(self, func, *args, index, size):
+        result = func(*args)
         self.__dataframe_semaphore.acquire()
         self.__comparison_dataframe[f"{func.__name__}_{size}"][index] = result[0]
         self.__time_dataframe[f"{func.__name__}_{size}"][index] = result[1]
@@ -141,7 +149,7 @@ class Profiler:
         self.__dataframe_semaphore.release()
 
     def show(self):
-        self.__fig, self.__axs = plt.subplots(2,2)
+        self.__fig, self.__axs = plt.subplots(2, 2)
         for func in self.__functions:
             yc = [self.__comparison_dataframe[f"{func.__name__}_{s}"].mean() for s in self.sizes]
             yt = [self.__time_dataframe[f"{func.__name__}_{s}"].mean() * 1000 for s in self.sizes]
