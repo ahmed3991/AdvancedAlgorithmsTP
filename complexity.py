@@ -12,10 +12,7 @@ def time_and_space_profiler(func):
         mem_after = memory_usage()[0]
         end_time = time.time()
 
-        #print(f"Execution time: {end_time - start_time} seconds")
-        #print(f"Memory usage: {mem_after - mem_before} MiB")
-
-        return func.__name__,result,end_time-start_time,mem_after - mem_before
+        return func.__name__, result, end_time - start_time, mem_after - mem_before
     return wrapper
 
 # calculate the least squares to fit the complexity fucntion
