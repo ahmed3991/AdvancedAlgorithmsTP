@@ -4,7 +4,7 @@ from complexity import time_and_space_profiler
 from tqdm import tqdm
 
 
-ARRAY_SIZES = [100, 500, 1000] 
+ARRAY_SIZES = [100, 500, 1000,10000] 
 TEST_REPEATS = 3 
 
 
