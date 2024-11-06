@@ -6,13 +6,6 @@ import pandas as pd
 
 np.random.seed(42)
 ## TODO: Data Generation
-array_sizes = [1000, 5000, 10000]
-tests = 5
-for size in array_sizes:
-        random_array = random.sample(range(size * 10), size)
-        ascending_array = sorted(random_array)
-        descending_arr = sorted(random_array, reverse=True)
-
 
 # Reset performance metrics
 def reset_metrics():
@@ -100,7 +93,13 @@ def measure_performance(algorithme, array):
 
 def analyze_algorithms():
     data = []
-    
+    array_sizes = [1000, 5000, 10000]
+    tests = 5
+    for size in array_sizes:
+        random_array = random.sample(range(size * 10), size)
+        ascending_array = sorted(random_array)
+        descending_arr = sorted(random_array, reverse=True)
+
     for array_type, arr in [('Random', random_array), ('Ascending', ascending_array), ('Descending', descending_arr)]:
         for algo_name, algo_function in [
             ('Selection Sort', selection_sort),
