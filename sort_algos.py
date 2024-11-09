@@ -80,7 +80,7 @@ def insertionSortShifting(t, n):
 ## TODO: make Benchmarks
 
 def measurePerformance(sizes, table_generator, name):
-    print(f"\nPerformance on {name} Tables:")
+    print(f"\nPerformance on {name} Table:")
     for size in sizes:
         table = table_generator(size)
         print(f"\nSize: {size}")
