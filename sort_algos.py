@@ -8,7 +8,7 @@ np.random.seed(42)
 ## TODO: Data Generation
 
 # Reset performance metrics
-def reset_metrics():
+def reset_comparisons_and_swaps_counts():
     global comparisons, swaps
     comparisons = 0
     swaps = 0
@@ -18,7 +18,7 @@ def reset_metrics():
 # Selection Sort
 def selection_sort(array):
     global comparisons, swaps
-    reset_metrics()
+    reset_comparisons_and_swaps_counts()
     n = len(array)
     for i in range(n):
         min_idx = i
@@ -33,7 +33,7 @@ def selection_sort(array):
 # Bubble Sort
 def bubble_sort(array):
     global comparisons, swaps
-    reset_metrics()
+    reset_comparisons_and_swaps_counts()
     n = len(array)
     for i in range(n):
         for j in range(0, n - i - 1):
@@ -46,7 +46,7 @@ def bubble_sort(array):
 # Insertion Sort by Exchanges
 def insertion_sort_exchanges(array):
     global comparisons, swaps
-    reset_metrics()
+    reset_comparisons_and_swaps_counts()
     n = len(array)
     for i in range(1, n):
         for j in range(i, 0, -1):
@@ -61,7 +61,7 @@ def insertion_sort_exchanges(array):
 # Insertion Sort by Shifting
 def insertion_sort_shifting(array):
     global comparisons, swaps
-    reset_metrics()
+    reset_comparisons_and_swaps_counts()
     n = len(array)
     for i in range(1, n):
         key = array[i]
@@ -75,14 +75,11 @@ def insertion_sort_shifting(array):
         swaps += 1
     return array
 
-
-
 ## TODO: measure_performance
 
 def measure_performance(algorithme, array):
-    reset_metrics()
     start_time = time.time()
-    copy_array = array[:]  # Create a shallow copy of the array
+    copy_array = array[:]
     sorted_array = algorithme(copy_array)
     end_time = time.time()
     execution_time = (end_time - start_time) * 1000
@@ -100,39 +97,39 @@ def analyze_algorithms():
         ascending_array = sorted(random_array)
         descending_arr = sorted(random_array, reverse=True)
 
-    for array_type, arr in [('Random', random_array), ('Ascending', ascending_array), ('Descending', descending_arr)]:
-        for algo_name, algo_function in [
-            ('Selection Sort', selection_sort),
-            ('Bubble Sort', bubble_sort),
-            ('Insertion Sort (Exchanges)', insertion_sort_exchanges),
-            ('Insertion Sort (Shifting)', insertion_sort_shifting)
-        ]:
-            comparisons_list = []
-            swaps_list = []
-            time_list = []
-            
-            for _ in range(tests):
-                exec_time, comparisons, swaps = measure_performance(algo_function, arr)
-                comparisons_list.append(comparisons)
-                swaps_list.append(swaps)
-                time_list.append(exec_time)
+        for array_type, arr in [('Random', random_array), ('Ascending', ascending_array), ('Descending', descending_arr)]:
+            for algo_name, algo_function in [
+                ('Selection Sort', selection_sort),
+                ('Bubble Sort', bubble_sort),
+                ('Insertion Sort (Exchanges)', insertion_sort_exchanges),
+                ('Insertion Sort (Shifting)', insertion_sort_shifting)
+            ]:
+                comparisons_list = []
+                swaps_list = []
+                time_list = []
+                
+                for _ in range(tests):
+                    exec_time, comparisons, swaps = measure_performance(algo_function, arr)
+                    comparisons_list.append(comparisons)
+                    swaps_list.append(swaps)
+                    time_list.append(exec_time)
 
-            Avg_comparisons = np.mean(comparisons_list)
-            Avg_swaps = np.mean(swaps_list)
-            Avg_time = np.mean(time_list)
-            
-            data.append({
-                'Algorithme': algo_name,
-                'Array Type': array_type,
-                'Array Size': size,
-                'Avg Comparisons': Avg_comparisons,
-                'Avg Swaps': Avg_swaps,
-                'Avg Time (ms)': Avg_time
-            })
+                Avg_comparisons = np.mean(comparisons_list)
+                Avg_swaps = np.mean(swaps_list)
+                Avg_time = np.mean(time_list)
+                
+                data.append({
+                    'Algorithme': algo_name,
+                    'Array Type': array_type,
+                    'Array Size': size,
+                    'Avg Comparisons': Avg_comparisons,
+                    'Avg Swaps': Avg_swaps,
+                    'Avg Time (ms)': Avg_time
+                })
 
     df = pd.DataFrame(data)
     return df
 
 data_frame = analyze_algorithms()
 print(data_frame)
-data_frame.to_csv('results.csv', index=False)
+data_frame.to_csv('Results.csv', index=False)
