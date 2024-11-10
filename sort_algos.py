@@ -17,11 +17,13 @@ def selection_sort(arr):
             comparison_count += 1
             if arr[j] < arr[min_index]:
                 min_index = j
+        comparison_count += 1
         if min_index != i:
             arr[i], arr[min_index] = arr[min_index], arr[i]
             move_count += 1
 
     return comparison_count, move_count
+    
 
 ## TODO: make Benchmarks
 
