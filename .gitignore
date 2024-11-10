@@ -1,2 +1,4 @@
 # created by virtualenv automatically
 *
+!*.ipynb
+!Results.csv
