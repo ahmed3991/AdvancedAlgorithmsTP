@@ -5,6 +5,7 @@
 
 
 ## TODO: Sort Algorithms implementations
+## TODO: Selection Sort is our task now
 
 
 ## TODO: make Benchmarks
