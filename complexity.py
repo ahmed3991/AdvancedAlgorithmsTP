@@ -62,6 +62,34 @@ def get_complexity(x, y):
             best_name = name
 
     return best_name
+    
 
 #TODO: add the code to generate random data for testing 
+def generate_test_data(sizes):
+    return [np.sort(np.random.rand(size)) for size in sizes]
+    
 #TODO: add the logic to test algorithms directly and get the best one from them using complexity comparion
+def profile_algorithms(arr_sizes, target):
+    results = {"sizes": arr_sizes, "simple_sequential": [], "iterative_binary": []}
+    
+    for arr in generate_test_data(arr_sizes):
+        size = len(arr)
+        
+        # Test simple sequential search
+        name, result, exec_time, mem_used = simple_sequential_search(arr, target)
+        results["simple_sequential"].append((size, exec_time, mem_used))
+        
+        # Test iterative binary search
+        name, result, exec_time, mem_used = iterative_binary_search(arr, target)
+        results["iterative_binary"].append((size, exec_time, mem_used))
+
+    return results
+    
+def analyze_results(results):
+    for alg_name in ["simple_sequential", "iterative_binary"]:
+        sizes = np.array([entry[0] for entry in results[alg_name]])
+        times = np.array([entry[1] for entry in results[alg_name]])
+
+        complexity = get_complexity(sizes, times)
+        print(f"Estimated complexity for {alg_name}: {complexity}")
+
