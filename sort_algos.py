@@ -10,7 +10,6 @@ def selection_sort(arr):
     comparison = 0
     moves = 0
     arr = arr.copy()
-
     for i in range(len(arr)):
         min_index = i
         for j in range(i + 1, len(arr)):
