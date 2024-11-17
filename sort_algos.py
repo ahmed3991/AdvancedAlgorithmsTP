@@ -36,7 +36,7 @@ def bubble_sort(arr):
                 arr[j], arr[j+1] = arr[j+1], arr[j]
 
 def insertion_sort_by_shifting(arr):
-
+    # Insertio,
      n = len(arr)
     for i in range(1, n):
         key = arr[i]
@@ -48,7 +48,7 @@ def insertion_sort_by_shifting(arr):
         arr[j+1] = key
 
 def insertion_sort_by_exchanges(arr):
-    
+
  n = len(arr)
     for i in range(1, n):
         for j in range(i, 0, -1):
