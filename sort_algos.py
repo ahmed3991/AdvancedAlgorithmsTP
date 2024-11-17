@@ -25,14 +25,58 @@ def selection_sort(arr):
 
 ## TODO: Complete the code
 
-def bubble_sort(arr):  
-    pass
+def bubble_sort(arr):
+    comparison_count = 0
+    move_count = 0
+    arr = arr.copy()
+    n = len(arr)
+
+    for i in range(n):
+        swapped = False
+        for j in range(0, n-i-1):
+            comparison_count += 1
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]  # Swap elements
+                move_count += 1
+                swapped = True
+        if not swapped:
+            break  # If no two elements were swapped in the inner loop, the array is sorted
+    return comparison_count, move_count
+
 
 def insertion_sort_by_shifting(arr):
-    pass
-
+    comparison_count = 0
+    move_count = 0
+    arr = arr.copy()
+    
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]  # Shift element to the right
+            j -= 1
+            comparison_count += 1
+            move_count += 1
+        arr[j + 1] = key
+        move_count += 1
+    return comparison_count, move_count
 def insertion_sort_by_exchanges(arr):
-    pass
+    comparison_count = 0
+    move_count = 0
+    arr = arr.copy()
+
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]  # Exchange elements
+            j -= 1
+            comparison_count += 1
+            move_count += 1
+        arr[j + 1] = key
+        move_count += 1
+    return comparison_count, move_count
+
 
 ## TODO: make Benchmarks
 
