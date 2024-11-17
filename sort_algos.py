@@ -25,14 +25,59 @@ def selection_sort(arr):
 
 ## TODO: Complete the code
 
-def bubble_sort(arr):  
-    pass
+def bubble_sort(arr):
+    comparisons = 0
+    swaps = 0
+    n = len(arr)
 
-def insertion_sort_by_shifting(arr):
-    pass
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            comparisons += 1
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swaps += 1
 
-def insertion_sort_by_exchanges(arr):
-    pass
+    return  comparisons, swaps
+
+
+def insertion_sort_shifting(arr):
+    comparisons = 0
+    swaps = 0
+    n = len(arr)
+
+    for i in range(1, n):
+        key = arr[i]
+        j = i - 1
+
+        while j >= 0 and arr[j] > key:
+            comparisons += 1
+            arr[j + 1] = arr[j]  # Shift
+            swaps += 1
+            j -= 1
+        arr[j + 1] = key
+
+        if j != i - 1:
+            comparisons += 1
+
+    return  comparisons, swaps
+def insertion_sort_exchange(arr):
+    comparisons = 0
+    swaps = 0
+    n = len(arr)
+
+    for i in range(1, n):
+        j = i
+        while j > 0 and arr[j] < arr[j - 1]:
+            comparisons += 1
+            arr[j], arr[j - 1] = arr[j - 1], arr[j]  # Swap
+            swaps += 1
+            j -= 1
+
+        if j > 0:
+            comparisons += 1
+
+    return  comparisons, swaps
+
 
 ## TODO: make Benchmarks
 
