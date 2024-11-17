@@ -26,19 +26,19 @@ def selection_sort(arr):
 ## TODO: Complete the code
 
 def bubble_sort(arr):  
-    i = 0
-    swap = 0
-    comp = 0
-    for i in range(len(arr)):
-        for j in range(len(arr)-i-1):
-            comp = comp + 1
-            if arr[j] > arr[j+1] :
-              c = arr[j+1]
-              arr[j+1] = arr[j]
-              arr[j] = c
-              swap = swap + 1
+ i = 0
+ swap = 0
+ comp = 0
+ for i in range(len(arr)):
+    for j in range(len(arr)-i-1):
+        comp = comp + 1
+        if arr[j] > arr[j+1] :
+            c = arr[j+1]
+            arr[j+1] = arr[j]
+            arr[j] = c
+            swap = swap + 1
 
-    return 'sort_bull',comp , swap
+ return 'sort_bull',comp , swap
 
 def insertion_sort_by_shifting(arr):
     comp = 0
