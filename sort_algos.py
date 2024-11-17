@@ -26,7 +26,7 @@ def selection_sort(arr):
 ## TODO: Complete the code
 
 def bubble_sort(arr):  
-    pass
+
     comparisons, moves = 0, 0
     n = len(arr)
     for i in range(n):
