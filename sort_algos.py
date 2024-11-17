@@ -26,13 +26,50 @@ def selection_sort(arr):
 ## TODO: Complete the code
 
 def bubble_sort(arr):  
-    pass
+ i = 0
+ swap = 0
+ comp = 0
+ for i in range(len(arr)):
+    for j in range(len(arr)-i-1):
+        comp = comp + 1
+        if arr[j] > arr[j+1] :
+            c = arr[j+1]
+            arr[j+1] = arr[j]
+            arr[j] = c
+            swap = swap + 1
+
+ return 'sort_bull',comp , swap
 
 def insertion_sort_by_shifting(arr):
-    pass
+    comp = 0
+    swap = 0
+    for i in range(1,len(arr)):
+          c = arr[i]
+          j = i - 1
+          comp = comp + 1
+          while (j >= 0 and c < arr[j]):
+                comp = comp + 1
+                arr[j+1] = arr[j]
+                j = j - 1
+                swap=swap+1
+          arr[j+1] = c
+    comp = comp - 1
+    return 'sort_insertion' ,comp , swap
 
 def insertion_sort_by_exchanges(arr):
-    pass
+    i = 0
+    swap = 0
+    comp = 0
+    for i in range(len(arr)):
+        j = i
+        for j in range(len(arr)):
+          comp = comp + 1
+          if arr[j] > arr[i] :
+              c = arr[i]
+              arr[i] = arr[j]
+              arr[j] = c
+              swap = swap + 1
+    return 'sort_selection', comp , swap
 
 ## TODO: make Benchmarks
 
