@@ -1,10 +1,3 @@
-## TODO: TP should be HERE
-
-
-## TODO: Data Generation
-
-
-## TODO: Sort Algorithms implementations
 
 import time
 import random
@@ -43,5 +36,3 @@ if __name__ == "__main__":
 
     sorted_array = selection_sort_algorithm(random_array, len(random_array))
     print("Sorted Array:", sorted_array)
-
-## TODO: make Benchmarks
