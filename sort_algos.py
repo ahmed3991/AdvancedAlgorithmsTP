@@ -78,7 +78,7 @@ def insertion_sort_by_shifting(arr,length):
     end_time = time.time()
 
     print(f"Execution time: {end_time - start_time} s")
-    print(f"CPU: {mem_after - mem_before} mb")
+    print(f"CPU: {mem_after } mb")
     print(f"Number of swaps: {count}")
 
     return arr
@@ -101,7 +101,7 @@ def insertion_sort_by_exchanges(arr,length):
     end_time = time.time()
 
     print(f"Execution time: {end_time - start_time} s")
-    print(f"CPU: {mem_after - mem_before} mb")
+    print(f"CPU: {mem_after} mb")
     print(f"Number of swaps: {count}")
 
     return arr
