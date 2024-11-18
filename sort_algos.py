@@ -1,39 +1,40 @@
 ## TODO: TP should be HERE
-
+pass
 
 ## TODO: Data Generation
-
+pass
 
 ## TODO: Sort Algorithms implementations
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
+
+
+## TODO: Selection Sort is our task now
 def selection_sort(arr):
-    comparison_count = 0
-    move_count = 0
-    arr = arr.copy()
+    n = len(arr)
+    for i in range(n):
+        min_idx = i
+        for j in range(i + 1, n):       
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]  
+    return arr
 
-    for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparison_count += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        comparison_count += 1
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
 
-    return comparison_count, move_count
-
-## TODO: Complete the code
-
-def bubble_sort(arr):  
-    pass
-
-def insertion_sort_by_shifting(arr):
-    pass
-
-def insertion_sort_by_exchanges(arr):
-    pass
 
 ## TODO: make Benchmarks
+import time
+
+def benchmark_sorting(sort_function, array):
+    start_time = time.time()
+    sort_function(array.copy())  
+    end_time = time.time()
+    return end_time - start_time
+
 
 print('hello')
