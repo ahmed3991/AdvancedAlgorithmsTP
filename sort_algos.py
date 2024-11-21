@@ -6,22 +6,16 @@
 
 ## TODO: Sort Algorithms implementations
 def selection_sort(arr):
-    comparison_count = 0
-    move_count = 0
-    arr = arr.copy()
+    n = len(arr)
+    for i in range(n):
+        # Find the minimum element in remaining unsorted array
+        min_idx = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
 
-    for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparison_count += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        comparison_count += 1
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
-
-    return comparison_count, move_count
+        # Swap the found minimum element with the first element
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
 
 ## TODO: Complete the code
 
@@ -39,8 +33,7 @@ def bubble_sort(arr):
         if not swapped:
             break
 def insertion_sort_by_shifting(arr):
-  def insertion_sort(arr):
-    for i in range(1, len(arr)):
+   for i in range(1, len(arr)):
         key = arr[i]
         j = i - 1
         while j >= 0 and arr[j] > key:
@@ -48,8 +41,8 @@ def insertion_sort_by_shifting(arr):
             j -= 1
         arr[j + 1] = key
     return arr
-def insertion_sort_by_exchanges(arr):
-    def insertion_sort_by_exchange(arr):
+    
+def insertion_sort_by_exchange(arr):
     for i in range(1, len(arr)):
         j = i
         while j > 0 and arr[j] < arr[j - 1]:
@@ -57,5 +50,4 @@ def insertion_sort_by_exchanges(arr):
             j -= 1
     return arr
 
-## TODO: make Benchmarks
 
