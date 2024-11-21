@@ -5,7 +5,7 @@
 
 
 ## TODO: Sort Algorithms implementations
-## TODO: Selection Sort is our task now
+
 def selection_sort(arr):
     comparison_count = 0
     move_count = 0
@@ -23,8 +23,3 @@ def selection_sort(arr):
             move_count += 1
 
     return comparison_count, move_count
-    
-
-## TODO: make Benchmarks
-
-print('hello')
