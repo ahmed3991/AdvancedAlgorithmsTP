@@ -5,34 +5,83 @@
 
 
 ## TODO: Sort Algorithms implementations
-def selection_sort(arr):
-    comparison_count = 0
-    move_count = 0
-    arr = arr.copy()
+@time_and_space_profiler
+def selection_sort(T):
+    i=0
+    index_min=0
+    j=0
+    comparisons=0
+    moves=0
+    while(i<(len(T)-1)):
+        comparisons+=1
+        index_min=i
+        j=i+1
+        while(j<len(T)):
+            if(T[j]<T[index_min]):
+                comparisons+=1
+                index_min=j
+            j+=1
+        swap(T,i,index_min)
+        moves+=1
+        i+=1
+    return comparisons,moves
 
-    for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparison_count += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        comparison_count += 1
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
-
-    return comparison_count, move_count
+def swap(T,a,b):
+    T[a], T[b] = T[b], T[a]
 
 ## TODO: Complete the code
 
-def bubble_sort(arr):  
-    pass
+@time_and_space_profiler
+def bubble_sort(T):
+    n = len(T)
+    comparisons=0
+    moves=0
+    for i in range(n):
+        swapped = False
+        for j in range(0, n-i-1):
+            comparisons+=1
+            if T[j] > T[j+1]:
+                comparisons+=1
+                T[j], T[j+1] = T[j+1], T[j]
+                moves+=1
+                swapped = True
+        if (swapped == False):
+            comparisons+=1
+            break
+    return comparisons,moves
 
-def insertion_sort_by_shifting(arr):
-    pass
-
-def insertion_sort_by_exchanges(arr):
-    pass
+@time_and_space_profiler
+def insertion_sort_swap(T):
+    comparisons=0
+    N = len(T)
+    moves=0
+    for i in range(1,N):
+        j = i
+        comparisons+=1
+        while (j > 0 and T[j] < T[j - 1]) :
+            comparisons+=1
+            temp = T[j]
+            T[j] = T[j - 1]
+            T[j-1] = temp
+            moves+=1
+            j -= 1
+    return comparisons,moves
+    
+@time_and_space_profiler
+def insertion_sort_shift(T):
+    comparisons=0
+    moves=0
+    for i in range(1, len(T)):
+        comparisons+=1
+        key = T[i]
+        j = i - 1
+        while (j >= 0 and key < T[j]):
+            comparisons+=1
+            T[j + 1] = T[j]
+            j -= 1
+        T[j + 1] = key
+        moves+=1
+    return comparisons,moves
 
 ## TODO: make Benchmarks
 
