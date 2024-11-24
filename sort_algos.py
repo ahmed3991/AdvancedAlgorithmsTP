@@ -46,7 +46,6 @@ def bubble_sort(arr):
             if arr[j] > arr[j + 1]:
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 swaps += 1
-
     return  comparisons, swaps
 
 
@@ -95,3 +94,82 @@ funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exch
 results = []
  
 # TODO: Complete the benchmark code
+import numpy as np
+
+## TODO: Data Generation
+lengths = [10, 100, 1000, 10000]
+
+
+random_arrays = [np.random.randint(0, 1000, size=l).tolist() for l in lengths]
+
+
+sorted_arrays = [list(range(l)) for l in lengths]
+
+inverse_sorted_arrays = [list(range(l, 0, -1)) for l in lengths]
+
+nbr_experiments = 10
+
+
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
+
+results = []
+
+# TODO: Complete the benchmark code
+for length, random_arr, sorted_arr, inv_sorted_arr in zip(lengths, random_arrays, sorted_arrays, inverse_sorted_arrays):
+    print(f"\nBenchmarking for array size: {length}")
+
+    for func in funcs:
+        total_comparisons_random = 0
+        total_swaps_random = 0
+        total_comparisons_sorted = 0
+        total_swaps_sorted = 0
+        total_comparisons_inverse = 0
+        total_swaps_inverse = 0
+
+        for arr, comparison_total, swaps_total in [(random_arr, total_comparisons_random, total_swaps_random),
+                                                  (sorted_arr, total_comparisons_sorted, total_swaps_sorted),
+                                                  (inv_sorted_arr, total_comparisons_inverse, total_swaps_inverse)]:
+            for _ in range(nbr_experiments):
+                arr_copy = arr.copy()
+                comparisons, swaps = func(arr_copy)
+                comparison_total += comparisons
+                swaps_total += swaps
+
+        avg_comparisons_random = total_comparisons_random / nbr_experiments
+        avg_swaps_random = total_swaps_random / nbr_experiments
+
+        avg_comparisons_sorted = total_comparisons_sorted / nbr_experiments
+        avg_swaps_sorted = total_swaps_sorted / nbr_experiments
+
+        avg_comparisons_inverse = total_comparisons_inverse / nbr_experiments
+        avg_swaps_inverse = total_swaps_inverse / nbr_experiments
+
+        results.append({
+            'Algorithm': func.__name__,
+            'Array Size': length,
+            'Type': 'Random',
+            'Comparisons': avg_comparisons_random,
+            'Swaps': avg_swaps_random
+        })
+        results.append({
+            'Algorithm': func.__name__,
+            'Array Size': length,
+            'Type': 'Sorted',
+            'Comparisons': avg_comparisons_sorted,
+            'Swaps': avg_swaps_sorted
+        })
+        results.append({
+            'Algorithm': func.__name__,
+            'Array Size': length,
+            'Type': 'Inverse Sorted',
+            'Comparisons': avg_comparisons_inverse,
+            'Swaps': avg_swaps_inverse
+        })
+
+        print(f"{func.__name__} - Random: {avg_comparisons_random:.2f} comparisons, {avg_swaps_random:.2f} swaps")
+        print(f"{func.__name__} - Sorted: {avg_comparisons_sorted:.2f} comparisons, {avg_swaps_sorted:.2f} swaps")
+        print(f"{func.__name__} - Inverse Sorted: {avg_comparisons_inverse:.2f} comparisons, {avg_swaps_inverse:.2f} swaps")
+
+print("\nFinal Results:")
+for result in results:
+    print(result)
