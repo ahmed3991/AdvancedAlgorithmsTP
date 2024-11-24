@@ -93,5 +93,50 @@ def insertion_sort_exchange(arr):
 funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
 
 results = []
- 
-# TODO: Complete the benchmark code
+
+
+for func in funcs:
+    for length, random_arr, sorted_arr, inverse_sorted_arr in zip(lengths, random_arrays, sorted_arrays, inverse_sorted_arrays):
+        for experiment in range(nbr_experiments):
+            start_time = time.time()
+            random_result = func(random_arr)
+            end_time = time.time()
+            results.append({
+                "Algorithm": func.__name__,
+                "Data Type": "random",
+                "Array Length": length,
+                "Comparisons": random_result[0],
+                "Moves": random_result[1],
+                "Execution Time (s)": end_time - start_time
+            })
+
+            start_time = time.time()
+            sorted_result = func(sorted_arr)
+            end_time = time.time()
+            results.append({
+                "Algorithm": func.__name__,
+                "Data Type": "sorted",
+                "Array Length": length,
+                "Comparisons": sorted_result[0],
+                "Moves": sorted_result[1],
+                "Execution Time (s)": end_time - start_time
+            })
+
+            start_time = time.time()
+            inverse_result = func(inverse_sorted_arr)
+            end_time = time.time()
+            results.append({
+                "Algorithm": func.__name__,
+                "Data Type": "inverse_sorted",
+                "Array Length": length,
+                "Comparisons": inverse_result[0],
+                "Moves": inverse_result[1],
+                "Execution Time (s)": end_time - start_time
+            })
+
+df = pd.DataFrame(results)
+
+output_file = "results.csv"
+df.to_csv(output_file, index=False)
+
+print(f"Results saved to {output_file}")
