@@ -1,17 +1,10 @@
-## TODO: TP should be HERE
+import numpy as np
 
+lengths = [10, 100, 1000, 10000]
 
-## TODO: Data Generation
-
-lenghts =[10,100,1000,10000]
-
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
-inverse_sorted_arrays = []
-
+random_arrays = [np.random.randint(0, 10000, size=l).tolist() for l in lengths]
+sorted_arrays = [list(range(l)) for l in lengths]
+inverse_sorted_arrays = [list(range(l, 0, -1)) for l in lengths]
 nbr_experiments = 10
 
 
@@ -33,8 +26,6 @@ def selection_sort(arr):
 
     return comparison_count, move_count
 
-## TODO: Complete the code
-
 def bubble_sort(arr):
     comparisons = 0
     swaps = 0
@@ -47,8 +38,7 @@ def bubble_sort(arr):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 swaps += 1
 
-    return  comparisons, swaps
-
+    return comparisons, swaps
 
 def insertion_sort_shifting(arr):
     comparisons = 0
@@ -61,7 +51,7 @@ def insertion_sort_shifting(arr):
 
         while j >= 0 and arr[j] > key:
             comparisons += 1
-            arr[j + 1] = arr[j]  # Shift
+            arr[j + 1] = arr[j]  # عملية التحريك
             swaps += 1
             j -= 1
         arr[j + 1] = key
@@ -69,7 +59,8 @@ def insertion_sort_shifting(arr):
         if j != i - 1:
             comparisons += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
+
 def insertion_sort_exchange(arr):
     comparisons = 0
     swaps = 0
@@ -79,19 +70,46 @@ def insertion_sort_exchange(arr):
         j = i
         while j > 0 and arr[j] < arr[j - 1]:
             comparisons += 1
-            arr[j], arr[j - 1] = arr[j - 1], arr[j]  # Swap
+            arr[j], arr[j - 1] = arr[j - 1], arr[j]  # عملية التبديل
             swaps += 1
             j -= 1
 
         if j > 0:
             comparisons += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
 
+# قائمة دوال الترتيب
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
 
-
-funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
-
+# تنفيذ الاختبارات
 results = []
- 
-# TODO: Complete the benchmark code
+
+for func in funcs:
+    for arr_type, arrays in [("Random", random_arrays), 
+                             ("Sorted", sorted_arrays), 
+                             ("Inverse Sorted", inverse_sorted_arrays)]:
+        for l_idx, l in enumerate(lengths):
+            avg_comparisons = 0
+            avg_swaps = 0
+
+            for _ in range(nbr_experiments):
+                arr = arrays[l_idx]
+                comparisons, swaps = func(arr)
+                avg_comparisons += comparisons
+                avg_swaps += swaps
+
+            avg_comparisons /= nbr_experiments
+            avg_swaps /= nbr_experiments
+            results.append({
+                "Algorithm": func.__name__,
+                "Array Type": arr_type,
+                "Array Length": l,
+                "Avg Comparisons": avg_comparisons,
+                "Avg Swaps": avg_swaps
+            })
+
+# طباعة النتائج
+for result in results:
+    print(result)
+
