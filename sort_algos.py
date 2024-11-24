@@ -1,16 +1,20 @@
 ## TODO: TP should be HERE
-
+import numpy as np
+import pandas as pd
+import time
+from tqdm import tqdm
+import tracemalloc
 
 ## TODO: Data Generation
 
-lenghts =[10,100,1000,10000]
+lenghts =[10,100,1000]
 
 # TODO : Use numpy
-random_arrays= []
+random_arrays= [np.random.randint(0, 10000, size=l) for l in lenghts]
 # TODO : Use range
-sorted_arrays= []
+sorted_arrays= [list(range(l)) for l in lenghts]
 # TODO : Use range
-inverse_sorted_arrays = []
+inverse_sorted_arrays = [list(range(l, 0, -1)) for l in lenghts]
 
 nbr_experiments = 10
 
@@ -93,5 +97,46 @@ def insertion_sort_exchange(arr):
 funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
 
 results = []
- 
+total_tasks = len(lenghts) * len(funcs) * 3 * nbr_experiments
+with tqdm(total=total_tasks, desc="Sorting Experiments") as pbar:
+    
+    for length, rand_array, sorted_array, inv_sorted_array in zip(lenghts, random_arrays, sorted_arrays, inverse_sorted_arrays):
+        for func in funcs:
+            func_name = func.__name__
+
+            for exp in range(nbr_experiments):
+                
+                for array_type, array in [('Random', rand_array), ('Sorted', sorted_array), ('Inversely Sorted', inv_sorted_array)]:
+                    
+                    
+                    tracemalloc.start()
+                    start_time = time.time()
+                    
+                    comparisons, moves = func(array)
+                    
+                    elapsed_time = time.time() - start_time
+                    current, peak = tracemalloc.get_traced_memory()
+                    tracemalloc.stop()
+
+                    
+                    results.append([
+                        func_name,  
+                        length,     
+                        array_type, 
+                        comparisons, 
+                        moves,      
+                        elapsed_time, 
+                        peak / 1024  
+                    ])
+
+                    
+                    pbar.update(1)
+
+
+
+df = pd.DataFrame(results, columns=['Algorithm', 'Array Size', 'Order', 'Comparisons', 'Moves', 'Time', 'Memory'])
+df.to_csv('sorting_results.csv', index=False)
+
+print('Results have been saved to sorting_results.csv')
+
 # TODO: Complete the benchmark code
