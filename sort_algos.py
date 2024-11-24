@@ -1,61 +1,44 @@
-## TODO: TP should be HERE
+import numpy as np
 
+# توليد البيانات
+lenghts = [10, 100, 1000, 10000]
 
-## TODO: Data Generation
+# مصفوفات عشوائية باستخدام numpy
+random_arrays = [np.random.randint(0, 10000, size=n).tolist() for n in lenghts]
 
+# مصفوفات مرتبة باستخدام range
+sorted_arrays = [list(range(n)) for n in lenghts]
 
-## TODO: Sort Algorithms implementations
-def selection_sort(arr):
-    comparison_count = 0
-    move_count = 0
-    arr = arr.copy()
+# مصفوفات مرتبة عكسيًا باستخدام range
+inverse_sorted_arrays = [list(range(n, 0, -1)) for n in lenghts]
 
-    for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparison_count += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        comparison_count += 1
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
+# عدد التجارب لكل مصفوفة
+nbr_experiments = 10ال الفرز
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
 
-    return comparison_count, move_count
+results = []
 
-## TODO: Complete the code
+for func in funcs:
+    for length in lenghts:
+        for arr in [random_arrays, sorted_arrays, inverse_sorted_arrays]:
+            comparison_count_total = 0
+            move_count_total = 0
+            for _ in range(nbr_experiments):
+                comparisons, moves = func(arr[length])
+                comparison_count_total += comparisons
+                move_count_total += moves
 
-def bubble_sort(arr):  
-    n = len(arr)
-    for i in range(n):
-        # Last i elements are already sorted
-        for j in range(0, n - i - 1):
-            if arr[j] > arr[j + 1]:
-                # Swap elements if they are in the wrong order
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+            avg_comparisons = comparison_count_total / nbr_experiments
+            avg_moves = move_count_total / nbr_experiments
+            results.append({
+                "algorithm": func.__name__,
+                "array_type": arr,
+                "length": length,
+                "average_comparisons": avg_comparisons,
+                "average_moves": avg_moves
+            })
 
-def insertion_sort_by_shifting(arr):
-    n = len(arr)
-    for i in range(1, n):
-        key = arr[i]
-        j = i - 1
-        # Shift elements to the right to make space for the key
-        while j >= 0 and arr[j] > key:
-            arr[j + 1] = arr[j]
-            j -= 1
-        arr[j + 1] = key
-
-def insertion_sort_by_exchanges(arr):
-    n = len(arr)
-    for i in range(1, n):
-        for j in range(i, 0, -1):
-            if arr[j] < arr[j - 1]:
-                # Swap elements if they are in the wrong order
-                arr[j], arr[j - 1] = arr[j - 1], arr[j]
-            else:
-                # Break early since the rest of the list is sorted
-                break
-
-## TODO: make Benchmarks
-
-print('hello')
+for result in results:
+    print(f"Algorithm: {result['algorithm']}, Array type: {result['array_type']}, "
+          f"Length: {result['length']}, Avg Comparisons: {result['average_comparisons']}, "
+          f"Avg Moves: {result['average_moves']}")
