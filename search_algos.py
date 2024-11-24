@@ -1,106 +1,42 @@
-from complexity import time_and_space_profiler
-from tqdm import tqdm , trange
 import numpy as np
-import pandas as pd
+
+lenghts = [10, 100, 1000, 10000]
+
+random_arrays = [np.random.randint(0, 10000, size=n).tolist() for n in lenghts]
+
+sorted_arrays = [list(range(n)) for n in lenghts]
 
 
+inverse_sorted_arrays = [list(range(n, 0, -1)) for n in lenghts]
 
-# Inialization logic
-# TODO: 30 tests should be implemented for 
-#       1000;10000;100000;1000000;10000000
+nbr_experiments = 10
 
-np.random.seed(42)
-
-tests = []
-
-#lenghts = [1000,10000,100000,1000000]
-
-lenghts = np.array(range(1000,1000000,20000))
-
-tests_per_length = 5
-
-for length in lenghts:
-    for _ in range(tests_per_length):
-
-        val = np.sort(np.random.randint(1,4*length,size=length))
-
-        target = np.random.randint(1,4*length)
-
-        test = (length, val, target)
-
-        tests.append(test)
-
-
-# Function definitions
-
-@time_and_space_profiler
-def sequantial_search(val,target):
-    for i in range(len(val)):
-        if target == val[i]: # comparision
-            return i+1
-    
-    return len(val)
-
-#@time_and_space_profiler
-#def quadratic_sequantial_search(val,target):
-#    for i in range(len(val)):
-#        for j in range(len(val)):
-#            if target == val[i]: # comparision
-#                return i+1
-#    
-#    return len(val)*len(val)
-
-@time_and_space_profiler
-def advanced_sequantial_search(val,target):
-    comparison = 0
-    for i in range(len(val)):
-        comparison+=2
-        if target == val[i]: # comparision
-            comparison-=1
-            break
-        # add the part to stop searching when target small to the element
-        elif target < val[i]:
-            break
-        
-    return comparison
-
-@time_and_space_profiler
-def binary_search(val,target):
-	
-    start = 0
-    end = len(val)-1
-    comparison = 1
-
-    while start < end:
-        half = (end + start)//2
-        comparison+=2
-        if target == val[half]:
-            comparison-=1
-            break
-        elif target < val[half]:
-            end = half -1
-        else:
-            start = half + 1 
-        comparison+=1
-    return comparison 
-    
-funcs = [sequantial_search, advanced_sequantial_search,binary_search]
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
 
 results = []
-for i , (length, val ,target) in tqdm(enumerate(tests),ncols=len(tests)):
-    
-    for func in funcs:
 
-        func_name,comparison,T, S = func(val,target)
+for func in funcs:
+    for length in lenghts:
+        for arr in [random_arrays, sorted_arrays, inverse_sorted_arrays]:
+            
+            comparison_count_total = 0
+            move_count_total = 0
+            for _ in range(nbr_experiments):
+                comparisons, moves = func(arr[length])
+                comparison_count_total += comparisons
+                move_count_total += moves
+            
+            avg_comparisons = comparison_count_total / nbr_experiments
+            avg_moves = move_count_total / nbr_experiments
+            results.append({
+                "algorithm": func.__name__,
+                "array_type": arr,
+                "length": length,
+                "average_comparisons": avg_comparisons,
+                "average_moves": avg_moves
+            })
 
-        results.append((i,func_name,length,comparison,T,S))
-
-
-# Printing results
-#print(results)
-
-df = pd.DataFrame(results, columns=['id_test','function_name','array_length','comparison','time','space'])
-
-print(df)
-
-df.to_csv('results.csv', index=False)
+for result in results:
+    print(f"Algorithm: {result['algorithm']}, Array type: {result['array_type']}, "
+          f"Length: {result['length']}, Avg Comparisons: {result['average_comparisons']}, "
+          f"Avg Moves: {result['average_moves']}")
