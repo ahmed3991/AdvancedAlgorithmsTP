@@ -95,3 +95,39 @@ funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exch
 results = []
  
 # TODO: Complete the benchmark code
+for func in funcs:
+    func_results = {
+        "name": func.__name__,
+        "random": [],
+        "sorted": [],
+        "inverse_sorted": []
+    }
+
+    # Run the experiment for each array type
+    for arr_type, arrays in zip(["random", "sorted", "inverse_sorted"], [random_arrays, sorted_arrays, inverse_sorted_arrays]):
+        for i, arr in enumerate(arrays):
+            comparisons, swaps = 0, 0
+            # Run the experiment multiple times
+            for _ in range(nbr_experiments):
+                arr_copy = arr.copy()  # Make sure the array is not modified between experiments
+                c, s = func(arr_copy)
+                comparisons += c
+                swaps += s
+            
+            # Average the results
+            comparisons_avg = comparisons / nbr_experiments
+            swaps_avg = swaps / nbr_experiments
+            
+            func_results[arr_type].append((comparisons_avg, swaps_avg))
+    
+    # Append the results of this function to the main results list
+    results.append(func_results)
+
+# Print the results
+for result in results:
+    print(f"Sorting function: {result['name']}")
+    for arr_type in ["random", "sorted", "inverse_sorted"]:
+        print(f"  {arr_type.capitalize()} arrays:")
+        for i, (comp, swap) in enumerate(result[arr_type]):
+            print(f"    Length {lenghts[i]} - Comparisons: {comp:.2f}, Swaps: {swap:.2f}")
+
