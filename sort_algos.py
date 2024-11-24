@@ -1,19 +1,17 @@
-## TODO: TP should be HERE
+import numpy as np
+import pandas as pd
+import time
 
+# TODO: Data Generation
+lengths = [10, 100, 1000]
 
-## TODO: Data Generation
+random_arrays = [np.random.randint(1, 1000, size=l).tolist() for l in lengths]
 
-lenghts =[10,100,1000,10000]
+sorted_arrays = [list(range(1, l + 1)) for l in lengths]
 
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
-inverse_sorted_arrays = []
+inverse_sorted_arrays = [list(range(l, 0, -1)) for l in lengths]
 
 nbr_experiments = 10
-
 
 def selection_sort(arr):
     comparison_count = 0
@@ -33,8 +31,6 @@ def selection_sort(arr):
 
     return comparison_count, move_count
 
-## TODO: Complete the code
-
 def bubble_sort(arr):
     comparisons = 0
     swaps = 0
@@ -47,8 +43,7 @@ def bubble_sort(arr):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 swaps += 1
 
-    return  comparisons, swaps
-
+    return comparisons, swaps
 
 def insertion_sort_shifting(arr):
     comparisons = 0
@@ -69,7 +64,8 @@ def insertion_sort_shifting(arr):
         if j != i - 1:
             comparisons += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
+
 def insertion_sort_exchange(arr):
     comparisons = 0
     swaps = 0
@@ -86,12 +82,55 @@ def insertion_sort_exchange(arr):
         if j > 0:
             comparisons += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
 
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
 
-
-funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
-
+# Benchmark code
 results = []
- 
-# TODO: Complete the benchmark code
+
+for func in funcs:
+    for length, random_arr, sorted_arr, inverse_sorted_arr in zip(lengths, random_arrays, sorted_arrays, inverse_sorted_arrays):
+        for experiment in range(nbr_experiments):
+            start_time = time.time()
+            random_result = func(random_arr)
+            end_time = time.time()
+            results.append({
+                "Algorithm": func.__name__,
+                "Data Type": "random",
+                "Array Length": length,
+                "Comparisons": random_result[0],
+                "Moves": random_result[1],
+                "Execution Time (s)": end_time - start_time
+            })
+
+            start_time = time.time()
+            sorted_result = func(sorted_arr)
+            end_time = time.time()
+            results.append({
+                "Algorithm": func.__name__,
+                "Data Type": "sorted",
+                "Array Length": length,
+                "Comparisons": sorted_result[0],
+                "Moves": sorted_result[1],
+                "Execution Time (s)": end_time - start_time
+            })
+
+            start_time = time.time()
+            inverse_result = func(inverse_sorted_arr)
+            end_time = time.time()
+            results.append({
+                "Algorithm": func.__name__,
+                "Data Type": "inverse_sorted",
+                "Array Length": length,
+                "Comparisons": inverse_result[0],
+                "Moves": inverse_result[1],
+                "Execution Time (s)": end_time - start_time
+            })
+
+df = pd.DataFrame(results)
+
+output_file = "results.csv"
+df.to_csv(output_file, index=False)
+
+print(f"Results saved to {output_file}")
