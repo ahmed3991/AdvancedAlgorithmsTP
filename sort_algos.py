@@ -1,8 +1,22 @@
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+
 ## TODO: TP should be HERE
 
 
 ## TODO: Data Generation
 
+lengths =[10,100,1000,10000]
+
+# TODO : Use numpy
+random_arrays= [np.random.randint(0, 10000, size=l).tolist() for l in lengths]
+# TODO : Use range
+sorted_arrays= [list(range(l)) for l in lengths]
+# TODO : Use range
+inverse_sorted_arrays = [list(range(l, 0, -1)) for l in lengths]
+
+nbr_experiments = 10
 
 ## TODO: Sort Algorithms implementations
 def selection_sort(arr):
@@ -79,6 +93,40 @@ def insertion_sort_exchange(arr):
     return  comparisons, swaps
 
 
-## TODO: make Benchmarks
+# Benchmarking code
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
 
-print('hello')
+results = []
+
+for func in tqdm(funcs, desc="Algorithms"):
+    for arr_type, arrays in zip(
+        ["Random", "Sorted", "Inverse Sorted"],
+        [random_arrays, sorted_arrays, inverse_sorted_arrays],
+    ):
+        for arr in arrays:
+            total_comparisons = 0
+            total_swaps = 0
+
+            # Repeat experiment
+            for _ in range(nbr_experiments):
+                comparisons, swaps = func(arr)
+                total_comparisons += comparisons
+                total_swaps += swaps
+
+            # Average results
+            avg_comparisons = total_comparisons / nbr_experiments
+            avg_swaps = total_swaps / nbr_experiments
+
+            results.append(
+                {
+                    "Algorithm": func.__name__,
+                    "Array Type": arr_type,
+                    "Array Length": len(arr),
+                    "Avg Comparisons": avg_comparisons,
+                    "Avg Swaps": avg_swaps,
+                }
+            )
+
+df_results = pd.DataFrame(results)
+
+print(df_results)
