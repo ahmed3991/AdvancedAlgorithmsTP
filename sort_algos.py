@@ -3,8 +3,18 @@
 
 ## TODO: Data Generation
 
+lenghts =[10,100,1000,10000]
 
-## TODO: Sort Algorithms implementations
+# TODO : Use numpy
+random_arrays= []
+# TODO : Use range
+sorted_arrays= []
+# TODO : Use range
+inverse_sorted_arrays = []
+
+nbr_experiments = 10
+
+
 def selection_sort(arr):
     comparison_count = 0
     move_count = 0
@@ -79,6 +89,9 @@ def insertion_sort_exchange(arr):
     return  comparisons, swaps
 
 
-## TODO: make Benchmarks
 
-print('hello')
+funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
+
+results = []
+ 
+# TODO: Complete the benchmark code
