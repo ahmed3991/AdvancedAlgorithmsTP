@@ -1,97 +1,50 @@
-## TODO: TP should be HERE
+import numpy as np
 
+# TODO: Data Generation
+lenghts = [10, 100, 1000, 10000]
 
-## TODO: Data Generation
-
-lenghts =[10,100,1000,10000]
-
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
+# TODO: Use numpy
+random_arrays = []
+# TODO: Use range
+sorted_arrays = []
+# TODO: Use range
 inverse_sorted_arrays = []
+
+# Generate arrays
+for length in lenghts:
+    random_arrays.append(np.random.randint(0, 10000, size=length))  # Random arrays
+    sorted_arrays.append(np.arange(length))  # Sorted arrays
+    inverse_sorted_arrays.append(np.arange(length-1, -1, -1))  # Inverse sorted arrays
 
 nbr_experiments = 10
 
+# Benchmark function
+def benchmark(sorting_func, arrays, func_name):
+    comparison_results = []
+    move_results = []
+    
+    for arr in arrays:
+        comparisons, moves = sorting_func(arr)
+        comparison_results.append(comparisons)
+        move_results.append(moves)
+    
+    avg_comparisons = np.mean(comparison_results)
+    avg_moves = np.mean(move_results)
+    print(f"{func_name} -> Avg Comparisons: {avg_comparisons}, Avg Moves: {avg_moves}")
+    
+    return avg_comparisons, avg_moves
 
-def selection_sort(arr):
-    comparison_count = 0
-    move_count = 0
-    arr = arr.copy()
+# List of sorting functions
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
+func_names = ['Selection Sort', 'Bubble Sort', 'Insertion Sort Shifting', 'Insertion Sort Exchange']
 
-    for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparison_count += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        comparison_count += 1
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
-
-    return comparison_count, move_count
-
-## TODO: Complete the code
-
-def bubble_sort(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(n):
-        for j in range(0, n - i - 1):
-            comparisons += 1
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-                swaps += 1
-
-    return  comparisons, swaps
-
-
-def insertion_sort_shifting(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(1, n):
-        key = arr[i]
-        j = i - 1
-
-        while j >= 0 and arr[j] > key:
-            comparisons += 1
-            arr[j + 1] = arr[j]  # Shift
-            swaps += 1
-            j -= 1
-        arr[j + 1] = key
-
-        if j != i - 1:
-            comparisons += 1
-
-    return  comparisons, swaps
-def insertion_sort_exchange(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(1, n):
-        j = i
-        while j > 0 and arr[j] < arr[j - 1]:
-            comparisons += 1
-            arr[j], arr[j - 1] = arr[j - 1], arr[j]  # Swap
-            swaps += 1
-            j -= 1
-
-        if j > 0:
-            comparisons += 1
-
-    return  comparisons, swaps
-
-
-
-funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
-
-results = []
- 
-# TODO: Complete the benchmark code
+# Run benchmarks
+for func, name in zip(funcs, func_names):
+    print(f"Benchmarking {name}:")
+    print("Random arrays:")
+    benchmark(func, random_arrays, name)
+    print("Sorted arrays:")
+    benchmark(func, sorted_arrays, name)
+    print("Inverse sorted arrays:")
+    benchmark(func, inverse_sorted_arrays, name)
+    print("-" * 50)
