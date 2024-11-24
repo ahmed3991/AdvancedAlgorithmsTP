@@ -1,20 +1,32 @@
+import numpy as np
+import csv
 ## TODO: TP should be HERE
 
 
 ## TODO: Data Generation
+np.random.seed(42)
+lengths = 10,100,1000,10000  
+nbr_experiments = 10  
+tests = []
 
-lenghts =[10,100,1000,10000]
+for length in lengths:
+    for _ in range(nbr_experiments):
+        val = np.random.randint(1, 4 * length, size=length)
+        tests.append((length, 'Random'))
+        val = list(range(1,length))
+        tests.append((length, 'Ascending'))  
+        val = list(range(length, 0, -1))
+        tests.append((length, 'Descending'))
 
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
-inverse_sorted_arrays = []
-
-nbr_experiments = 10
+output_file = 'results.csv'
+with open(output_file, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(['Array Length', 'Sorting Type'])
+    for test in tests:
+        writer.writerow([test[0], test[1]])  
 
 
+## TODO: Complete the code
 def selection_sort(arr):
     comparison_count = 0
     move_count = 0
@@ -32,8 +44,6 @@ def selection_sort(arr):
             move_count += 1
 
     return comparison_count, move_count
-
-## TODO: Complete the code
 
 def bubble_sort(arr):
     comparisons = 0
