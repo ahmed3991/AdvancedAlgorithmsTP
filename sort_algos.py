@@ -1,20 +1,23 @@
-## TODO: TP should be HERE
+## TODO: TP should be HER
+from tqdm import tqdm
+import numpy as np
+import pandas as pd
 
+# Data Generation
+lengths = [10, 100, 1000, 10000]
 
-## TODO: Data Generation
+# Generate random arrays using NumPy
+random_arrays = [np.random.randint(0, 100, size=length) for length in lengths]
 
-lenghts =[10,100,1000,10000]
+# Generate sorted arrays using range
+sorted_arrays = [np.array(range(length)) for length in lengths]
 
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
-inverse_sorted_arrays = []
+# Generate inverse sorted arrays
+inverse_sorted_arrays = [np.array(range(length - 1, -1, -1)) for length in lengths]
 
 nbr_experiments = 10
 
-
+# Sorting Functions
 def selection_sort(arr):
     comparison_count = 0
     move_count = 0
@@ -33,7 +36,6 @@ def selection_sort(arr):
 
     return comparison_count, move_count
 
-## TODO: Complete the code
 
 def bubble_sort(arr):
     comparisons = 0
@@ -47,7 +49,7 @@ def bubble_sort(arr):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 swaps += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
 
 
 def insertion_sort_shifting(arr):
@@ -69,7 +71,9 @@ def insertion_sort_shifting(arr):
         if j != i - 1:
             comparisons += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
+
+
 def insertion_sort_exchange(arr):
     comparisons = 0
     swaps = 0
@@ -86,12 +90,35 @@ def insertion_sort_exchange(arr):
         if j > 0:
             comparisons += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
 
 
+# Sorting functions to test
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
 
-funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
-
+# Running Experiments
 results = []
- 
-# TODO: Complete the benchmark code
+
+for length, random_array, sorted_array, inverse_sorted_array in tqdm(
+    zip(lengths, random_arrays, sorted_arrays, inverse_sorted_arrays), 
+    total=len(lengths), 
+    desc="Processing Experiments"
+):
+    for func in funcs:
+        for experiment_type, array in [
+            ("Random", random_array), 
+            ("Sorted", sorted_array), 
+            ("Inverse Sorted", inverse_sorted_array)
+        ]:
+            comparisons, swaps = func(array)
+            results.append({
+                "Function": func.__name__,
+                "Array Type": experiment_type,
+                "Array Length": length,
+                "Comparisons": comparisons,
+                "Swaps": swaps,
+            })
+
+df_results = pd.DataFrame(results)
+print(df_results)
+df_results.to_csv("sorting_experiment_results.csv", index=False)
