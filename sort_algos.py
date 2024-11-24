@@ -6,23 +6,26 @@
 
 ## TODO: Sort Algorithms implementations
 ## TODO: Selection Sort is our task now
-def selection_sort(arr):
-    comparison_count = 0
-    move_count = 0
-    arr = arr.copy()
-
-    for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparison_count += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        comparison_count += 1
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
-
-    return comparison_count, move_count
+@time_and_space_profiler
+def selection_sort(T):
+    i=0
+    index_min=0
+    j=0
+    comparisons=0
+    moves=0
+    while(i<(len(T)-1)):
+        comparisons+=1
+        index_min=i
+        j=i+1
+        while(j<len(T)):
+            if(T[j]<T[index_min]):
+                comparisons+=1
+                index_min=j
+            j+=1
+        swap(T,i,index_min)
+        moves+=1
+        i+=1
+    return comparisons,moves
     
 
 ## TODO: make Benchmarks
