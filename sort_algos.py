@@ -1,16 +1,16 @@
-## TODO: TP should be HERE
+import numpy as np
 
+# TODO: Data Generation
+lengths = [10, 100, 1000, 10000]
 
-## TODO: Data Generation
+# إنشاء مصفوفات عشوائية باستخدام numpy
+random_arrays = [np.random.randint(0, 100000, size=l).tolist() for l in lengths]
 
-lenghts =[10,100,1000,10000]
+# إنشاء مصفوفات مرتبة باستخدام range
+sorted_arrays = [list(range(l)) for l in lengths]
 
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
-inverse_sorted_arrays = []
+# إنشاء مصفوفات مرتبة عكسياً باستخدام range
+inverse_sorted_arrays = [list(range(l, 0, -1)) for l in lengths]
 
 nbr_experiments = 10
 
@@ -47,8 +47,7 @@ def bubble_sort(arr):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 swaps += 1
 
-    return  comparisons, swaps
-
+    return comparisons, swaps
 
 def insertion_sort_shifting(arr):
     comparisons = 0
@@ -69,7 +68,8 @@ def insertion_sort_shifting(arr):
         if j != i - 1:
             comparisons += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
+
 def insertion_sort_exchange(arr):
     comparisons = 0
     swaps = 0
@@ -86,12 +86,36 @@ def insertion_sort_exchange(arr):
         if j > 0:
             comparisons += 1
 
-    return  comparisons, swaps
+    return comparisons, swaps
 
-
-
-funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
 
 results = []
- 
+
 # TODO: Complete the benchmark code
+for func in funcs:
+    func_name = func.__name__
+    for arr_type, arrays in [("Random", random_arrays), 
+                             ("Sorted", sorted_arrays), 
+                             ("Inverse Sorted", inverse_sorted_arrays)]:
+        for length, array in zip(lengths, arrays):
+            total_comparisons = 0
+            total_swaps = 0
+            for _ in range(nbr_experiments):
+                comp, swaps = func(array.copy())
+                total_comparisons += comp
+                total_swaps += swaps
+            
+            avg_comparisons = total_comparisons / nbr_experiments
+            avg_swaps = total_swaps / nbr_experiments
+            results.append({
+                "Function": func_name,
+                "Array Type": arr_type,
+                "Length": length,
+                "Avg Comparisons": avg_comparisons,
+                "Avg Swaps": avg_swaps
+            })
+
+# طباعة النتائج
+for result in results:
+    print(result)
