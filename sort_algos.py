@@ -1,6 +1,6 @@
 ## TODO: TP should be HERE
 import numpy as np
-
+print('hi')
 ## TODO: Data Generation
 
 # Lengths of arrays to generate
