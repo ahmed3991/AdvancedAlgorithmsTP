@@ -95,3 +95,29 @@ funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exch
 results = []
  
 # TODO: Complete the benchmark code
+
+for func in funcs:
+    for length, random_arr, sorted_arr, inverse_arr in zip(lengths, random_arrays, sorted_arrays, inverse_sorted_arrays):
+        # إجراء التجربة للقائمة العشوائية
+        start_time = time.time()
+        comparisons, swaps = func(random_arr)
+        elapsed_time = time.time() - start_time
+        results.append((func.__name__, length, "random", comparisons, swaps, elapsed_time))
+
+        # إجراء التجربة للقائمة المرتبة
+        start_time = time.time()
+        comparisons, swaps = func(sorted_arr)
+        elapsed_time = time.time() - start_time
+        results.append((func.__name__, length, "sorted", comparisons, swaps, elapsed_time))
+
+        # إجراء التجربة للقائمة المرتبة عكسياً
+        start_time = time.time()
+        comparisons, swaps = func(inverse_arr)
+        elapsed_time = time.time() - start_time
+        results.append((func.__name__, length, "inverse_sorted", comparisons, swaps, elapsed_time))
+
+# عرض النتائج
+print("Function | Length | Array Type       | Comparisons | Swaps | Time (s)")
+print("---------|--------|------------------|-------------|-------|----------")
+for result in results:
+    print(f"{result[0]:<9} | {result[1]:<6} | {result[2]:<16} | {result[3]:<11} | {result[4]:<5} | {result[5]:.6f}")
