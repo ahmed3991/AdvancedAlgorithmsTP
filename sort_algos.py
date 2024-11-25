@@ -1,16 +1,28 @@
+import pandas as pd
+import numpy as np
+
+
 ## TODO: TP should be HERE
 
 
 ## TODO: Data Generation
 
-lenghts =[10,100,1000,10000]
+lengths =[10,100,1000]
 
 # TODO : Use numpy
 random_arrays= []
+for l in lengths:
+    random_arrays.append(np.random.randint(0, 1000, size=l).tolist())
+
 # TODO : Use range
 sorted_arrays= []
+for l in lengths:
+    sorted_arrays.append(list(range(l)))
+
 # TODO : Use range
 inverse_sorted_arrays = []
+for l in lengths:
+    inverse_sorted_arrays.append(list(range(l, 0, -1)))
 
 nbr_experiments = 10
 
@@ -93,5 +105,34 @@ def insertion_sort_exchange(arr):
 funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
 
 results = []
+for func in funcs:
+    for size, random_array, sorted_array, reverse_sorted_array in zip(
+        lengths, random_arrays, sorted_arrays, inverse_sorted_arrays
+    ):
+        for experiment in range(nbr_experiments):
+            for data_type, dataset in zip(
+                ["random", "sorted", "reverse_sorted"],
+                [random_array, sorted_array, reverse_sorted_array],
+            ):
+                comp, swaps = func(dataset)
+                results.append(
+                    {
+                        "function": func.__name__,
+                        "array_size": size,
+                        "data_type": data_type,
+                        "comparisons": comp,
+                        "swaps": swaps,
+                    }
+                )
+
+
+
+df = pd.DataFrame(results)
+
+
+output_file = "sorting_results.csv"
+df.to_csv(output_file, index=False)
+
+print(f"Results saved to {output_file}")
  
 # TODO: Complete the benchmark code
