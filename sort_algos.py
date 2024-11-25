@@ -1,18 +1,33 @@
 ## TODO: TP should be HERE
-
+import numpy as np
 
 ## TODO: Data Generation
 
-lenghts =[10,100,1000,10000]
+# Lengths of arrays to generate
+lengths = [10, 100, 1000, 10000]
 
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
+# Number of experiments per array size and type
+nbr_experiments = 10
+
+# Arrays to store the generated data
+random_arrays = []
+sorted_arrays = []
 inverse_sorted_arrays = []
 
-nbr_experiments = 10
+# Generate the arrays
+for length in lengths:
+    # Random arrays
+    for _ in range(nbr_experiments):
+        random_arrays.append(np.random.randint(0, 10000, size=length).tolist())
+
+    # Sorted arrays
+    for _ in range(nbr_experiments):
+        sorted_arrays.append(list(range(length)))
+
+    # Inverse sorted arrays
+    for _ in range(nbr_experiments):
+        inverse_sorted_arrays.append(list(range(length, 0, -1)))
+
 
 
 def selection_sort(arr):
