@@ -11,14 +11,12 @@ lengths = [10, 100, 1000, 10000]
 nbr_experiments = 10
 
 # TODO : Use numpy
-# Generate 10 random arrays for each length using numpy
 random_arrays = [
     [np.random.randint(0, 1000, size=length) for _ in range(nbr_experiments)]
     for length in lengths
 ]
 
 # TODO : Use range
-# Generate 10 sorted arrays for each length using range
 sorted_arrays = [
     [np.arange(length) for _ in range(nbr_experiments)]
     for length in lengths
@@ -26,24 +24,10 @@ sorted_arrays = [
 
 
 # TODO : Use range
-# Generate 10 inverse sorted arrays for each length using range
 inverse_sorted_arrays = [
     [np.arange(length - 1, -1, -1) for _ in range(nbr_experiments)]
     for length in lengths
 ]
-
-# Check one of the generated arrays (example: first 10 random arrays for length 10)
-# print("Random Arrays (length=10):")
-# for array in random_arrays[0]:
-#     print(array)
-
-# print("\nSorted Arrays (length=10):")
-# for array in sorted_arrays[0]:
-#     print(array)
-
-# print("\nInverse Sorted Arrays (length=10):")
-# for array in inverse_sorted_arrays[0]:
-#     print(array)
 
 def selection_sort(arr):
     comparison_count = 0
