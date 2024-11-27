@@ -121,11 +121,11 @@ results = []
 
 id_test = 1
 
-for array_type, arrays_by_length in test_arrays.items():
+for array_type, arrays_by_length in array_types.items():
     for length_idx, arrays in enumerate(arrays_by_length):
         array_length = lengths[length_idx]
         for arr in arrays:
-            for func_name, func in functions.items():
+            for func_name, func in funcs.items():
 
                 start_time = time.time()
                 comparisons, swaps = func(arr)
