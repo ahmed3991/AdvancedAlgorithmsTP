@@ -43,7 +43,7 @@ def bubble_sort(arr):
 
 def insertion_sort_by_exchanges(arr):
     comparisons = 0
-    moves = 0
+    moves = 0 
     n = len(arr)
     for i in range(1, n):
         key = arr[i]
