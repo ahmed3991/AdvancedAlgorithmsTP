@@ -3,17 +3,31 @@
 
 ## TODO: Data Generation
 
-lenghts =[10,100,1000,10000]
+import numpy as np
+import pandas as pd
+import time
 
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
-inverse_sorted_arrays = []
-
+lengths = [10, 100, 1000, 10000]
 nbr_experiments = 10
 
+# TODO : Use numpy
+random_arrays = [
+    [np.random.randint(0, 1000, size=length) for _ in range(nbr_experiments)]
+    for length in lengths
+]
+
+# TODO : Use range
+sorted_arrays = [
+    [np.arange(length) for _ in range(nbr_experiments)]
+    for length in lengths
+]
+
+
+# TODO : Use range
+inverse_sorted_arrays = [
+    [np.arange(length - 1, -1, -1) for _ in range(nbr_experiments)]
+    for length in lengths
+]
 
 def selection_sort(arr):
     comparison_count = 0
@@ -90,8 +104,42 @@ def insertion_sort_exchange(arr):
 
 
 
-funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
+funcs =[
+    ("selection_sort", selection_sort),
+    ("bubble_sort", bubble_sort),
+    ("insertion_sort_shifting", insertion_sort_shifting),
+    ("insertion_sort_exchange", insertion_sort_exchange),
+]
+
+array_types = {
+    "random": random_arrays,
+    "sorted": sorted_arrays,
+    "inverse_sorted": inverse_sorted_arrays,
+}
 
 results = []
- 
+
+id_test = 1
+
+for array_type, arrays_by_length in array_types.items():
+    for length_idx, arrays in enumerate(arrays_by_length):
+        array_length = lengths[length_idx]
+        for arr in arrays:
+            for func_name, func in funcs.items():
+
+                start_time = time.time()
+                comparisons, swaps = func(arr)
+                elapsed_time = time.time() - start_time
+
+                results.append([
+                    test_id, func_name, array_length, comparisons, swaps, elapsed_time, array_type
+                ])
+                test_id += 1
+
+# Save results to CSV
+df = pd.DataFrame(results, columns=['id_test', 'function_name', 'array_length', 'comparison', 'swaps', 'time', 'array_type'])
+df.to_csv('results.csv', index=False)
+
+print("Results saved to 'results.csv'.")
+
 # TODO: Complete the benchmark code
