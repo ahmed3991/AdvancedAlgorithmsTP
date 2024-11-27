@@ -1,84 +1,61 @@
-## TODO: TP should be HERE
+def selectionSort(array):
+    comparison = 0
+    move = 0
+    for i in range(len(array)):
+        min = i
+        for j in range(i + 1, len(array)):
+            comparison += 1
+            if array[j] < array[min]:
+                min = j
+        if min != i:
+            array[i], array[min] = array[min], array[i]
+            move += 1
+
+    return comparison, move
 
 
-## TODO: Data Generation
+def bubbleSort(array):
+    comparison = 0
+    swap = 0
+    for i in range(len(array)):
+        for j in range(0, len(array) - i - 1):
+            comparison += 1
+            if array[j] > array[j + 1]:
+                temp = array[j]
+                array[j] = array[j + 1]
+                array[j + 1] = temp
+                swap += 1
+    return comparison, swap
 
 
-## TODO: Sort Algorithms implementations
-def selection_sort(arr):
-    comparison_count = 0
-    move_count = 0
-    arr = arr.copy()
-
-    for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparison_count += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        comparison_count += 1
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
-
-    return comparison_count, move_count
-
-## TODO: Complete the code
-
-def bubble_sort(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(n):
-        for j in range(0, n - i - 1):
-            comparisons += 1
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-                swaps += 1
-
-    return  comparisons, swaps
-
-
-def insertion_sort_shifting(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(1, n):
+def insertionSort(arr):
+    comparison = 0
+    swap = 0
+    for i in range(1, len(arr)):
         key = arr[i]
         j = i - 1
-
-        while j >= 0 and arr[j] > key:
-            comparisons += 1
-            arr[j + 1] = arr[j]  # Shift
-            swaps += 1
+        while j >= 0 and key < arr[j]:
+            comparison += 1
+            arr[j + 1] = arr[j]
+            swap += 1
             j -= 1
+        if j >= 0:
+            comparison += 1
         arr[j + 1] = key
+        swap += 1
+    return comparison, swap
 
-        if j != i - 1:
-            comparisons += 1
 
-    return  comparisons, swaps
-def insertion_sort_exchange(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(1, n):
+def insertionSort(arr):
+    comparison = 0
+    swap = 0
+    for i in range(1, len(arr)):
         j = i
-        while j > 0 and arr[j] < arr[j - 1]:
-            comparisons += 1
-            arr[j], arr[j - 1] = arr[j - 1], arr[j]  # Swap
-            swaps += 1
+        while (j > 0 and arr[j] < arr[j - 1]):
+            comparison += 1
+            arr[j], arr[j - 1] = arr[j - 1], arr[j]
+            swap += 1
             j -= 1
-
         if j > 0:
-            comparisons += 1
-
-    return  comparisons, swaps
-
-
-## TODO: make Benchmarks
-
-print('hello')
+            comparison += 1
+    return comparison, swap
