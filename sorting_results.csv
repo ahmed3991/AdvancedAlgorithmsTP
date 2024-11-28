@@ -1,0 +1,109 @@
+Function,Array Type,Length,Comparisons,Moves,Time (s)
+selection_sort,Random,10,55,8,0.0
+selection_sort,Sorted,10,55,0,0.0
+selection_sort,Inverse Sorted,10,55,5,0.0
+selection_sort,Random,10,55,8,0.0
+selection_sort,Sorted,10,55,0,0.0
+selection_sort,Inverse Sorted,10,55,5,0.0
+selection_sort,Random,10,55,8,0.0
+selection_sort,Sorted,10,55,0,0.0
+selection_sort,Inverse Sorted,10,55,5,0.0
+selection_sort,Random,100,5050,95,0.0
+selection_sort,Sorted,100,5050,0,0.0
+selection_sort,Inverse Sorted,100,5050,50,0.0
+selection_sort,Random,100,5050,95,0.015614509582519531
+selection_sort,Sorted,100,5050,0,0.0
+selection_sort,Inverse Sorted,100,5050,50,0.0
+selection_sort,Random,100,5050,95,0.0
+selection_sort,Sorted,100,5050,0,0.0
+selection_sort,Inverse Sorted,100,5050,50,0.0
+selection_sort,Random,1000,500500,985,0.3831136226654053
+selection_sort,Sorted,1000,500500,0,0.3426947593688965
+selection_sort,Inverse Sorted,1000,500500,500,0.285719633102417
+selection_sort,Random,1000,500500,985,0.21873736381530762
+selection_sort,Sorted,1000,500500,0,0.2360548973083496
+selection_sort,Inverse Sorted,1000,500500,500,0.2086472511291504
+selection_sort,Random,1000,500500,985,0.2201979160308838
+selection_sort,Sorted,1000,500500,0,0.218735933303833
+selection_sort,Inverse Sorted,1000,500500,500,0.2441697120666504
+bubble_sort,Random,10,45,18,0.0
+bubble_sort,Sorted,10,45,0,0.0
+bubble_sort,Inverse Sorted,10,45,45,0.0
+bubble_sort,Random,10,45,18,0.0
+bubble_sort,Sorted,10,45,0,0.0
+bubble_sort,Inverse Sorted,10,45,45,0.0
+bubble_sort,Random,10,45,18,0.0
+bubble_sort,Sorted,10,45,0,0.0
+bubble_sort,Inverse Sorted,10,45,45,0.0
+bubble_sort,Random,100,4950,2197,0.006056070327758789
+bubble_sort,Sorted,100,4950,0,0.0009992122650146484
+bubble_sort,Inverse Sorted,100,4950,4950,0.003997325897216797
+bubble_sort,Random,100,4950,2197,0.0019986629486083984
+bubble_sort,Sorted,100,4950,0,0.0019989013671875
+bubble_sort,Inverse Sorted,100,4950,4950,0.003997802734375
+bubble_sort,Random,100,4950,2197,0.004243135452270508
+bubble_sort,Sorted,100,4950,0,0.0019986629486083984
+bubble_sort,Inverse Sorted,100,4950,4950,0.0029981136322021484
+bubble_sort,Random,1000,499500,250319,0.5352339744567871
+bubble_sort,Sorted,1000,499500,0,0.2422645092010498
+bubble_sort,Inverse Sorted,1000,499500,499500,0.4989793300628662
+bubble_sort,Random,1000,499500,250319,0.37810516357421875
+bubble_sort,Sorted,1000,499500,0,0.2611715793609619
+bubble_sort,Inverse Sorted,1000,499500,499500,0.5401921272277832
+bubble_sort,Random,1000,499500,250319,0.45790839195251465
+bubble_sort,Sorted,1000,499500,0,0.20699667930603027
+bubble_sort,Inverse Sorted,1000,499500,499500,0.5708401203155518
+insertion_sort_shifting,Random,10,24,18,0.0
+insertion_sort_shifting,Sorted,10,0,0,0.0
+insertion_sort_shifting,Inverse Sorted,10,54,45,0.0
+insertion_sort_shifting,Random,10,24,18,0.0
+insertion_sort_shifting,Sorted,10,0,0,0.0
+insertion_sort_shifting,Inverse Sorted,10,54,45,0.0
+insertion_sort_shifting,Random,10,24,18,0.0
+insertion_sort_shifting,Sorted,10,0,0,0.0
+insertion_sort_shifting,Inverse Sorted,10,54,45,0.0
+insertion_sort_shifting,Random,100,2288,2197,0.0019986629486083984
+insertion_sort_shifting,Sorted,100,0,0,0.0
+insertion_sort_shifting,Inverse Sorted,100,5049,4950,0.002000093460083008
+insertion_sort_shifting,Random,100,2288,2197,0.001998424530029297
+insertion_sort_shifting,Sorted,100,0,0,0.0
+insertion_sort_shifting,Inverse Sorted,100,5049,4950,0.002997159957885742
+insertion_sort_shifting,Random,100,2288,2197,0.0010118484497070312
+insertion_sort_shifting,Sorted,100,0,0,0.0
+insertion_sort_shifting,Inverse Sorted,100,5049,4950,0.0035185813903808594
+insertion_sort_shifting,Random,1000,251309,250319,0.21086788177490234
+insertion_sort_shifting,Sorted,1000,0,0,0.0009930133819580078
+insertion_sort_shifting,Inverse Sorted,1000,500499,499500,0.3591341972351074
+insertion_sort_shifting,Random,1000,251309,250319,0.23905539512634277
+insertion_sort_shifting,Sorted,1000,0,0,0.0
+insertion_sort_shifting,Inverse Sorted,1000,500499,499500,0.4391908645629883
+insertion_sort_shifting,Random,1000,251309,250319,0.18392491340637207
+insertion_sort_shifting,Sorted,1000,0,0,0.0
+insertion_sort_shifting,Inverse Sorted,1000,500499,499500,0.3922455310821533
+insertion_sort_exchange,Random,10,26,18,0.0
+insertion_sort_exchange,Sorted,10,9,0,0.0
+insertion_sort_exchange,Inverse Sorted,10,45,45,0.0
+insertion_sort_exchange,Random,10,26,18,0.0
+insertion_sort_exchange,Sorted,10,9,0,0.0
+insertion_sort_exchange,Inverse Sorted,10,45,45,0.0
+insertion_sort_exchange,Random,10,26,18,0.0
+insertion_sort_exchange,Sorted,10,9,0,0.0
+insertion_sort_exchange,Inverse Sorted,10,45,45,0.0
+insertion_sort_exchange,Random,100,2290,2197,0.01561880111694336
+insertion_sort_exchange,Sorted,100,99,0,0.0
+insertion_sort_exchange,Inverse Sorted,100,4950,4950,0.0
+insertion_sort_exchange,Random,100,2290,2197,0.0
+insertion_sort_exchange,Sorted,100,99,0,0.0
+insertion_sort_exchange,Inverse Sorted,100,4950,4950,0.0
+insertion_sort_exchange,Random,100,2290,2197,0.0
+insertion_sort_exchange,Sorted,100,99,0,0.0
+insertion_sort_exchange,Inverse Sorted,100,4950,4950,0.015628814697265625
+insertion_sort_exchange,Random,1000,251312,250319,0.31029844284057617
+insertion_sort_exchange,Sorted,1000,999,0,0.001999378204345703
+insertion_sort_exchange,Inverse Sorted,1000,499500,499500,0.6905303001403809
+insertion_sort_exchange,Random,1000,251312,250319,0.33808088302612305
+insertion_sort_exchange,Sorted,1000,999,0,0.001009225845336914
+insertion_sort_exchange,Inverse Sorted,1000,499500,499500,0.6728038787841797
+insertion_sort_exchange,Random,1000,251312,250319,0.30287718772888184
+insertion_sort_exchange,Sorted,1000,999,0,0.0019998550415039062
+insertion_sort_exchange,Inverse Sorted,1000,499500,499500,0.6192681789398193
