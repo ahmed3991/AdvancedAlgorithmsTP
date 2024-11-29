@@ -95,3 +95,54 @@ funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exch
 results = []
  
 # TODO: Complete the benchmark code
+
+import random
+
+def generate_random_array(size):
+    return [random.randint(1, 1000) for _ in range(size)]
+
+def generate_sorted_array(size):
+    array = [random.randint(1, 1000) for _ in range(size)]
+    return sorted(array)
+
+def generate_descending_array(size):
+    array = [random.randint(1, 1000) for _ in range(size)]
+    return sorted(array, reverse=True)
+
+
+import time
+
+def measure_time(func, arr):
+    start_time = time.time()
+    func(arr)
+    end_time = time.time()
+    return end_time - start_time
+
+sizes = [1000, 10000, 100000, 1000000]
+
+for size in sizes:
+    print(f"Testing array of size {size}:")
+    
+    random_array = generate_random_array(size)
+    sorted_array = generate_sorted_array(size)
+    descending_array = generate_descending_array(size)
+    
+    # Bubble Sort
+print("Bubble Sort:")
+print("Random:", measure_time(bubble_sort, random_array.copy()))
+print("Sorted:", measure_time(bubble_sort, sorted_array.copy()))
+print("Descending:", measure_time(bubble_sort, descending_array.copy()))
+    
+    # Insertion Sort by exchanges
+print("Insertion Sort by exchange:")
+print("Random:", measure_time(insertion_sort_exchange, random_array.copy()))
+print("Sorted:", measure_time(insertion_sort_exchange, sorted_array.copy()))
+print("Descending:", measure_time(insertion_sort_exchange, descending_array.copy()))
+    
+    # Insertion Sort by shifting
+print("Insertion Sort by shifting:")
+print("Random:", measure_time(insertion_sort_shifting, random_array.copy()))
+print("Sorted:", measure_time(insertion_sort_shifting, sorted_array.copy()))
+print("Descending:", measure_time(insertion_sort_shifting, descending_array.copy()))
+    
+print("\n")
