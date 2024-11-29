@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-from complexity import time_and_space_profiler
+from complexity import time_and_space_profiler  # Ensure this is implemented correctl
 
 # Define sorting algorithms with profiling
-
 @time_and_space_profiler
 def selection_sort(arr):
     comparisons = 0
@@ -70,27 +69,21 @@ lengths = [10, 100, 1000]
 nbr_experiments = 10
 
 # Generate arrays of each type (random, sorted, inverse sorted) for each length and number of experiments
-random_arrays = []
-sorted_arrays = []
-inverse_sorted_arrays = []
-
+test_cases = []
 for length in lengths:
     for _ in range(nbr_experiments):
-        # Random arrays: Use numpy to generate random integers
-        random_arrays.append(np.random.randint(1, 4 * length, size=length))
-
-        # Sorted arrays: Use range to generate a sorted array
-        sorted_arrays.append(np.arange(length))
-
-        # Inverse sorted arrays: Use range to generate a sorted array, then reverse it
-        inverse_sorted_arrays.append(np.arange(length)[::-1])
+        # Random array
+        test_cases.append(("Random", np.random.randint(1, 4 * length, size=length)))
+        # Sorted array
+        test_cases.append(("Sorted", np.arange(length)))
+        # Inverse sorted array
+        test_cases.append(("Inverse Sorted", np.arange(length)[::-1]))
 
 # Run tests and store results
 results = []
 
-# Iterate over each test and run the sorting algorithms
-for i, (length, original_array) in tqdm(enumerate(zip(lengths * nbr_experiments, random_arrays + sorted_arrays + inverse_sorted_arrays)), 
-                                          total=(len(lengths) * nbr_experiments * 3), desc="Testing Sort Algorithms"):
+# Iterate over test cases and run the sorting algorithms
+for i, (array_type, original_array) in tqdm(enumerate(test_cases), total=len(test_cases), desc="Testing Sort Algorithms"):
     for algo_name, algo_func in sorting_algorithms:
         # Make a copy of the array to avoid in-place sorting issues
         array_copy = np.copy(original_array)
@@ -102,8 +95,8 @@ for i, (length, original_array) in tqdm(enumerate(zip(lengths * nbr_experiments,
         results.append({
             "Test ID": i,
             "Algorithm": algo_name,
-            "Array Length": length,
-            "Array Type": "Random" if i < nbr_experiments * len(lengths) else ("Sorted" if i < 2 * nbr_experiments * len(lengths) else "Inverse Sorted"),
+            "Array Length": len(original_array),
+            "Array Type": array_type,
             "Comparisons": comparisons,
             "Time (s)": elapsed_time,
             "Space (MiB)": space_used
