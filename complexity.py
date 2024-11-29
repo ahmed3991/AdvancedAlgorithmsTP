@@ -25,7 +25,11 @@ def leastSquares(x,y,func):
     sigma_gn_y = func(x) * y
     coef = sigma_gn_y.sum() / sigma_gn_squared.sum()
     rms = np.sqrt(((y - coef * func(x))** 2).mean()) / y.mean()
-    return rms
+    func_data = coef * func(x)
+    
+    return rms, func_data , coef
+
+
 
 # print the complexity of the algorithm using array lenght and time - or comparison -
 def get_complexity(x, y):
@@ -48,15 +52,16 @@ def get_complexity(x, y):
     def nlog2(x):
         return x * np.log2(x)
 
+
     funcs = [_1,n,n_2,n_3,log2,nlog2]
     complexity_names = ['O(1)','O(n)','O(n2)','O(n3)','O(log2)','O(nlog2)']
 
-    best_fit =  leastSquares(x,y,funcs[0])
+    best_fit, _ , _=  leastSquares(x,y,funcs[0])
     best_name = complexity_names[0]
 
 
     for func , name  in zip(funcs[1:],complexity_names[1:]):
-        new_fit = leastSquares(x,y,func)
+        new_fit, _ , _  = leastSquares(x,y,func)
         if new_fit < best_fit:
             best_fit = new_fit
             best_name = name
