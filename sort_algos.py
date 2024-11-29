@@ -1,9 +1,3 @@
-## TODO: TP should be HERE
-
-
-## TODO: Data Generation
-
-
 ## TODO: Sort Algorithms implementations
 def selection_sort(arr):
     comparison_count = 0
@@ -24,7 +18,6 @@ def selection_sort(arr):
     return comparison_count, move_count
 
 ## TODO: Complete the code
-
 def bubble_sort(arr):
     comparisons = 0
     swaps = 0
@@ -51,7 +44,7 @@ def insertion_sort_shifting(arr):
 
         while j >= 0 and arr[j] > key:
             comparisons += 1
-            arr[j + 1] = arr[j]  # Shift
+            arr[j + 1] = arr[j]
             swaps += 1
             j -= 1
         arr[j + 1] = key
@@ -77,8 +70,3 @@ def insertion_sort_exchange(arr):
             comparisons += 1
 
     return  comparisons, swaps
-
-
-## TODO: make Benchmarks
-
-print('hello')
