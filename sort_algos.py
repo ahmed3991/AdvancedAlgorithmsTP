@@ -24,59 +24,53 @@ def selection_sort(arr):
     return comparison_count, move_count
 
 ## TODO: Complete the code
+def sort_selection (t):
+    i=0
+    swap =0
+    comp = 0
+    for i in range(len(t)):
+        j=i
+        for j in range(len(t)):
+          comp = comp + 1
+          if t[j]>t[i] :
+              c= t[i]
+              t[i]=t[j]
+              t[j]=c
+              swap=swap+1
+    return 'sort_selection', comp , swap
 
-def bubble_sort(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
 
-    for i in range(n):
-        for j in range(0, n - i - 1):
-            comparisons += 1
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-                swaps += 1
+def sort_bull (t):
+    i=0
+    swap =0
+    comp = 0
+    for i in range(len(t)):
+        for j in range(len(t)-i-1):
+            comp = comp + 1
+            if t[j]>t[j+1] :
+              c= t[j+1]
+              t[j+1]=t[j]
+              t[j]=c
+              swap=swap+1
 
-    return  comparisons, swaps
+    return 'sort_bull',comp , swap
 
 
-def insertion_sort_shifting(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(1, n):
-        key = arr[i]
-        j = i - 1
-
-        while j >= 0 and arr[j] > key:
-            comparisons += 1
-            arr[j + 1] = arr[j]  # Shift
-            swaps += 1
-            j -= 1
-        arr[j + 1] = key
-
-        if j != i - 1:
-            comparisons += 1
-
-    return  comparisons, swaps
-def insertion_sort_exchange(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(1, n):
-        j = i
-        while j > 0 and arr[j] < arr[j - 1]:
-            comparisons += 1
-            arr[j], arr[j - 1] = arr[j - 1], arr[j]  # Swap
-            swaps += 1
-            j -= 1
-
-        if j > 0:
-            comparisons += 1
-
-    return  comparisons, swaps
+def sort_insertion (t):
+    comp = 0
+    swap = 0
+    for i in range(1,len(t)):
+          c=t[i]
+          j=i-1
+          comp = comp + 1
+          while (j>=0 and c < t[j]):
+                comp = comp + 1
+                t[j+1] = t[j]
+                j=j-1
+                swap=swap+1
+          t[j+1] = c
+    comp = comp - 1
+    return 'sort_insertion' ,comp , swap
 
 
 ## TODO: make Benchmarks
