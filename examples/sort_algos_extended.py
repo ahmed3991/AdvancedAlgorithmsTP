@@ -69,18 +69,38 @@ def selection_sort(arr):
 
 ## TODO: Complete the merge sort
 
-def merge_sort(arr):
-    pass
+def merge_sorts(arr):
+    def merge(left, right):
+        merge_sorts = []
+        i ,j = 0, 0
+        while i < len(left) and j < len(right):
+            if left[i] <= right[j]:
+                merge_sorts.append(left[i])
+                i += 1
+            else:
+                merge_sorts.append(right[j])
+                j += 1
+        merge_sorts += left[i:]
+        merge_sorts += right[j:]
+        return merge_sorts
+
+def mergesort(list):
+    if len(list) < 2:
+        return list
+    middle = len(list) / 2
+    left = mergesort(list[:middle])
+    right = mergesort(list[middle:])
+    return merge(left, right)
 
 # Algorithms to benchmark
 funcs = [
     selection_sort,
-    merge_sort
+    merge_sorts
 ]
 
 # Benchmarking
 profiler = TimeAndSpaceProfiler()
-results = []
+merge_sortss = []
 
 # Create a tqdm progress bar for tracking the experiments
 total_iterations = len(funcs) * len(lengths) * nbr_experiments * 3  # 3 for random, sorted, inverse_sorted
@@ -104,7 +124,7 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                         "size": size,
                         "experiment": experiment_idx + 1,
                     })
-                    results.append(logs)
+                    merge_sortss.append(logs)
 
                     # Update tqdm progress bar with custom message
                     pbar.set_postfix({
@@ -115,11 +135,11 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                     })
                     pbar.update(1)
 
-# Convert results to a pandas DataFrame
-df = pd.DataFrame(results)
+# Convert merge_sortss to a pandas DataFrame
+df = pd.DataFrame(merge_sortss)
 
 # Write the DataFrame to a CSV file
-csv_filename = "benchmark_extended_results.csv"
+csv_filename = "benchmark_extended_merge_sortss.csv"
 df.to_csv(csv_filename, index=False)
 
 
@@ -135,8 +155,8 @@ grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
     'move_count': 'mean'
 }).reset_index()
 
-# Save both raw and grouped results for later analysis
-df.to_csv('sort_extended_results_raw.csv', index=False)
-grouped.to_csv('sort_extended_results_grouped.csv', index=False)
+# Save both raw and grouped merge_sortss for later analysis
+df.to_csv('sort_extended_merge_sortss_raw.csv', index=False)
+grouped.to_csv('sort_extended_merge_sortss_grouped.csv', index=False)
 
-print("\nResults have been saved to 'sort_extended_results_raw.csv' and 'sort_extended_results_grouped.csv'")
+print("\nmerge_sortss have been saved to 'sort_extended_merge_sortss_raw.csv' and 'sort_extended_merge_sortss_grouped.csv'")
