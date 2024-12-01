@@ -69,6 +69,7 @@ def selection_sort(arr):
 
 ## TODO: Complete the merge sort
 def merge_sort(arr):
+    
     comparisons = 0
     move_count = 0
     
