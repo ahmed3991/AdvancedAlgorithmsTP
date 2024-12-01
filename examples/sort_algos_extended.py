@@ -98,7 +98,7 @@ def merge_sort(arr):
     return merged, comparisons, moves  
 
 
-# Algorithms to benchmark
+# Algorithms to benchmark to
 funcs = [
     selection_sort,
     merge_sort
