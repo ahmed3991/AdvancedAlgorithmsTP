@@ -70,7 +70,42 @@ def selection_sort(arr):
 ## TODO: Complete the merge sort
 
 def merge_sort(arr):
-    pass
+    comparisons = 0
+    move_count = 0
+    n = len(arr)
+
+    def merge(left, right):
+        nonlocal comparisons, move_count
+        merged = []
+        i = j = 0
+
+        while i < len(left) and j < len(right):
+            comparisons += 1
+            if left[i] <= right[j]:
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                j += 1
+                move_count += 1  
+
+        merged.extend(left[i:])
+        merged.extend(right[j:])
+        move_count += len(left) - i + len(right) - j
+        return merged
+
+    def recursive_sort(sub_arr):
+        if len(sub_arr) <= 1:
+            return sub_arr
+        mid = len(sub_arr) // 2
+        left = recursive_sort(sub_arr[:mid])
+        right = recursive_sort(sub_arr[mid:])
+        return merge(left, right)
+
+    sorted_arr = recursive_sort(arr)
+    arr[:] = sorted_arr  
+    return Metrics(n, comparisons, move_count)
+
 
 # Algorithms to benchmark
 funcs = [

@@ -2,5 +2,6 @@ tqdm
 pandas
 matplotlib
 numpy
+networkx
 memory-profiler
 seaborn
