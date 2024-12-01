@@ -70,7 +70,50 @@ def selection_sort(arr):
 ## TODO: Complete the merge sort
 
 def merge_sort(arr):
-    pass
+    comparison_count = 0
+    move_count = 0
+
+    def merge(left, right):
+        nonlocal comparison_count, move_count
+        merged = []
+        i = j = 0
+
+        # دمج القائمتين مع تتبع المقارنات والحركات
+        while i < len(left) and j < len(right):
+            comparison_count += 1
+            if left[i] <= right[j]:
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                j += 1
+            move_count += 1
+
+        # إضافة العناصر المتبقية
+        while i < len(left):
+            merged.append(left[i])
+            i += 1
+            move_count += 1
+
+        while j < len(right):
+            merged.append(right[j])
+            j += 1
+            move_count += 1
+
+        return merged
+
+    def merge_sort_recursive(array):
+        if len(array) <= 1:
+            return array
+
+        mid = len(array) // 2
+        left = merge_sort_recursive(array[:mid])
+        right = merge_sort_recursive(array[mid:])
+
+        return merge(left, right)
+
+    sorted_arr = merge_sort_recursive(arr)
+    return sorted_arr, comparison_count, move_count
 
 # Algorithms to benchmark
 funcs = [
