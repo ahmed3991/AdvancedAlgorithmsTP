@@ -1,97 +1,144 @@
 ## TODO: TP should be HERE
-
+import random
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+import time
 
 ## TODO: Data Generation
+leng = [10,100,1000,10000]
 
-lenghts =[10,100,1000,10000]
-
-# TODO : Use numpy
-random_arrays= []
-# TODO : Use range
-sorted_arrays= []
-# TODO : Use range
-inverse_sorted_arrays = []
-
-nbr_experiments = 10
+randomArrs = [np.random.randint(0,100,size=n) for n in leng]
+sortedArrs = [np.array(range(n)) for n in leng]
+inverseArrs = [np.array(range(n-1,-1,-1)) for n in leng]
 
 
-def selection_sort(arr):
-    comparison_count = 0
-    move_count = 0
-    arr = arr.copy()
 
-    for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparison_count += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        comparison_count += 1
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
-
-    return comparison_count, move_count
+## TODO: Sort Algorithms implementations
+## TODO: Selection Sort is our task now
+def selectionSort(data):
+    comps=0
+    swaps=0
+    n=len(data)
+    for i in range(n):
+        min=i
+        for j in range(i+1,n):
+            comps+=1
+            if data[j] <data[min]:
+                min=j
+        if min!= i:
+            data[i],data[min] =data[min],data[i]
+            swaps+=1
+    return comps, swaps
 
 ## TODO: Complete the code
 
-def bubble_sort(arr):
-    comparisons = 0
+def bubbleSort(data):
+    comps = 0
     swaps = 0
-    n = len(arr)
-
+    n = len(data)
     for i in range(n):
         for j in range(0, n - i - 1):
-            comparisons += 1
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+            comps += 1
+            if data[j] > data[j + 1]:
+                data[j], data[j + 1] = data[j + 1], data[j]
                 swaps += 1
+    return comps, swaps
 
-    return  comparisons, swaps
-
-
-def insertion_sort_shifting(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
+def insertionShifting(data):
+    comps=0
+    swaps=0
+    n = len(data)
     for i in range(1, n):
-        key = arr[i]
+        temp = data[i]
         j = i - 1
 
-        while j >= 0 and arr[j] > key:
-            comparisons += 1
-            arr[j + 1] = arr[j]  # Shift
+        while j >= 0 and data[j] > temp:
+            comps+ 1
+            data[j+1] = data[j]
             swaps += 1
             j -= 1
-        arr[j + 1] = key
-
-        if j != i - 1:
-            comparisons += 1
-
-    return  comparisons, swaps
-def insertion_sort_exchange(arr):
-    comparisons = 0
-    swaps = 0
-    n = len(arr)
-
-    for i in range(1, n):
-        j = i
-        while j > 0 and arr[j] < arr[j - 1]:
-            comparisons += 1
-            arr[j], arr[j - 1] = arr[j - 1], arr[j]  # Swap
-            swaps += 1
-            j -= 1
-
-        if j > 0:
-            comparisons += 1
-
-    return  comparisons, swaps
+        data[j+1] = temp
 
 
+    return comps ,swaps
 
-funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exchange]
+def insertionExchange(data):
+    comps=0
+    swaps=0
+    n=len(data)
+    for i in range(1,n):
+        j=i
+        while j>0 and data[j]<data[j-1]:
+            comps += 1
+            data[j], data[j-1] = data[j-1], data[j]
+            swaps+=1
+            j-=1
 
-results = []
- 
-# TODO: Complete the benchmark code
+
+    return comps, swaps
+
+
+def measurePerformance(implFunction, data):
+    start_time = time.time()
+    copy_data = data[:]
+    sorted_data = implFunction(copy_data)
+    end_time = time.time()
+    execution_time = (end_time - start_time) * 1000
+    return execution_time
+
+
+def performExperiments():
+    results = []
+    tests = 5
+    algos = [selectionSort, bubbleSort, insertionShifting, insertionExchange]
+
+    for n, randomArr, sortedArr, inverseArr in tqdm(zip(leng, randomArrs, sortedArrs, inverseArrs), total=len(leng),
+                                                    desc="Processing Experiments"):
+        for algo in algos:
+            for expType, data in [("Random", randomArr), ("Sorted", sortedArr), ("Inverse Sorted", inverseArr)]:
+                comps, swaps = algo(data)
+                exec_time = measurePerformance(algo, data)
+                results.append({
+                    "Function": algo.__name__,
+                    "Array Type": expType,
+                    "Array Length": n,
+                    "Comparisons": comps,
+                    "Swaps": swaps,
+                    "Execution Time (ms)": exec_time
+                })
+
+    df_results = pd.DataFrame(results)
+    print(df_results)
+    df_results.to_csv("sorting_experiment_results.csv", index=False)
+
+
+performExperiments()
+
+## TODO: make Benchmarks
+'''
+def benchmarkSort(sort_function, data):
+    start = time.time()
+    comps, swaps = sort_function(data)
+    end = time.time()
+    return comps, swaps, end - start
+
+print('Data before sorting:')
+print(data[:20])
+
+comps, swaps, duration = benchmarkSort(selectionSort, data.copy())
+print("\nSelection Sort:")
+print(f"Comparisons: {comps}, Swaps: {swaps}, Time: {duration:.5f} seconds")
+
+comps, swaps, duration = benchmarkSort(bubbleSort, data.copy())
+print("\nBubble Sort:")
+print(f"Comparisons: {comps}, Swaps: {swaps}, Time: {duration:.5f} seconds")
+
+comps, swaps, duration = benchmarkSort(insertionSortShifting, data.copy())
+print("\nInsertion Sort (Shifting):")
+print(f"Comparisons: {comps}, Swaps: {swaps}, Time: {duration:.5f} seconds")
+
+comps, swaps, duration = benchmarkSort(insertionSortExchange, data.copy())
+print("\nInsertion Sort (Exchange):")
+print(f"Comparisons: {comps}, Swaps: {swaps}, Time: {duration:.5f} seconds")
+'''
