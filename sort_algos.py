@@ -2,15 +2,16 @@
 
 
 ## TODO: Data Generation
-
+import csv
+import numpy as np
 lenghts =[10,100,1000,10000]
 
 # TODO : Use numpy
-random_arrays= []
+random_arrays= [np.random.randint(0, 10000, size=l).tolist() for l in lenghts]
 # TODO : Use range
-sorted_arrays= []
+sorted_arrays= [list(range(l)) for l in lenghts]
 # TODO : Use range
-inverse_sorted_arrays = []
+inverse_sorted_arrays = [list(range(l, 0, -1)) for l in lenghts]
 
 nbr_experiments = 10
 
@@ -95,3 +96,37 @@ funcs = [selection_sort, bubble_sort,insertion_sort_shifting,insertion_sort_exch
 results = []
  
 # TODO: Complete the benchmark code
+funcs = [selection_sort, bubble_sort, insertion_sort_shifting, insertion_sort_exchange]
+
+
+results = []
+
+for func in funcs:
+    print(f"Testing function: {func.__name__}")
+    
+   
+    for array_type, arrays in zip(["Random", "Sorted", "Inverse Sorted"], [random_arrays, sorted_arrays, inverse_sorted_arrays]):
+        
+       
+        for arr in arrays:
+            print(f"Running on {array_type} array of length {len(arr)}")
+            
+            
+            for _ in range(nbr_experiments):
+                performance = func(arr)
+                results.append((func.__name__, array_type, len(arr), performance))
+
+
+print("\nBenchmark Results:")
+for result in results:
+    algorithm, array_type, length, performance = result
+    comparisons, swaps = performance
+    print(f"Algorithm: {algorithm}, Array Type: {array_type}, Length: {length}, Comparisons: {comparisons}, Swaps: {swaps}")
+   
+    with open("benchmark_results.csv", mode="w", newline='') as file:
+      writer = csv.writer(file)
+      writer.writerow(["Algorithm", "Array Type", "Length", "Comparisons", "Swaps"])  # Header row
+      for result in results:
+        writer.writerow(result)
+
+print("Results saved to benchmark_results.csv")
