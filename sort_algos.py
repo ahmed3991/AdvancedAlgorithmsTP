@@ -7,7 +7,7 @@ import pandas as pd
 
 ## TODO: Data Generation
 
-lenghts =[10,100,1000,10000]
+lenghts =[10,100,1000]
 
 # TODO : Use numpy
 random_arrays= []
@@ -136,4 +136,5 @@ for func in funcs:
                 "Average Memory (KB)": avg_memory / 1024
             })
 df = pd.DataFrame(results)
+print(df)
 df.to_csv("sorting_algorithms_results.csv", index=False)
