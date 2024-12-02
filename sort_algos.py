@@ -1,5 +1,9 @@
 ## TODO: TP should be HERE
 import numpy as np
+import time
+import tracemalloc
+
+import pandas as pd
 
 ## TODO: Data Generation
 
@@ -103,16 +107,33 @@ for func in funcs:
         for n, base_array in zip(lenghts, arrays):
             total_comparisons = 0
             total_swaps = 0
+            total_time = 0
+            total_memory = 0
             for _ in range(nbr_experiments):
+                tracemalloc.start()
+                start_time = time.perf_counter()
+
                 comparisons, swaps = func(base_array)
+
+                end_time = time.perf_counter()
+                _, peak_memory = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
                 total_comparisons += comparisons
                 total_swaps += swaps
+                total_time += (end_time - start_time)
+                total_memory += peak_memory
             avg_comparisons = total_comparisons / nbr_experiments
             avg_swaps = total_swaps / nbr_experiments
+            avg_time = total_time / nbr_experiments
+            avg_memory = total_memory / nbr_experiments
             results.append({
                 "Algorithm": func.__name__,
                 "Array Type": arr_type,
                 "Length": n,
                 "Average Comparisons": avg_comparisons,
-                "Average Swaps": avg_swaps
+                "Average Swaps": avg_swaps,
+                "Average Time (s)": avg_time,
+                "Average Memory (KB)": avg_memory / 1024
             })
+df = pd.DataFrame(results)
+df.to_csv("sorting_algorithms_results.csv", index=False)
