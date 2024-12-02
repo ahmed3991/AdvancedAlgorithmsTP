@@ -3,6 +3,7 @@ import random
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from memory_profiler import memory_usage
 import time
 
 ## TODO: Data Generation
@@ -87,6 +88,12 @@ def measurePerformance(implFunction, data):
     execution_time = (end_time - start_time) * 1000
     return execution_time
 
+def measureMemory(algo, data):
+    def wrapped():
+        algo(data)
+    mem_before = memory_usage(-1, interval=0.01, timeout=1)
+    mem_after = memory_usage((wrapped,), interval=0.01, timeout=1)
+    return max(mem_after) - min(mem_before)
 
 def performExperiments():
     results = []
@@ -98,6 +105,7 @@ def performExperiments():
         for algo in algos:
             for expType, data in [("Random", randomArr), ("Sorted", sortedArr), ("Inverse Sorted", inverseArr)]:
                 comps, swaps = algo(data)
+                mem_space = measureMemory(algo, data)
                 exec_time = measurePerformance(algo, data)
                 results.append({
                     "Function": algo.__name__,
@@ -105,15 +113,16 @@ def performExperiments():
                     "Array Length": n,
                     "Comparisons": comps,
                     "Swaps": swaps,
-                    "Execution Time (ms)": exec_time
+                    "Execution Time (ms)": exec_time,
+                    "Memory Space":  mem_space
                 })
 
     df_results = pd.DataFrame(results)
     print(df_results)
     df_results.to_csv("sorting_experiment_results.csv", index=False)
 
-
-performExperiments()
+if __name__ == '__main__':
+    performExperiments()
 
 ## TODO: make Benchmarks
 '''
