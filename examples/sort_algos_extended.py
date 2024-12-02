@@ -162,7 +162,7 @@ grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
     'move_count': 'mean'
 }).reset_index()
 
-# Save both raw and grouped results for later analysis
+# Save both raw and grouped results for later analysis analysis
 df.to_csv('sort_extended_results_raw.csv', index=False)
 grouped.to_csv('sort_extended_results_grouped.csv', index=False)
 
