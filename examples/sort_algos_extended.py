@@ -1,8 +1,8 @@
 import pandas as pd
 from tqdm import tqdm
-
 import sys
 from pathlib import Path
+from collections import namedtuple
 
 # Add parent directory to path
 sys.path.append(str(Path(__file__).parent.parent))
@@ -17,18 +17,13 @@ from complexity import (
     ComplexityDashboardVisualizer
 )
 
-from collections import namedtuple
-
-## TODO: Data Generation
-
 # Set up data generators
 factory = DataGeneratorFactory()
 factory.register_generator("random", RandomDataGenerator(0, 100))
 factory.register_generator("sorted", LinearDataGenerator())
 
 # Data generation
-#lengths = [10, 100, 1000, 10000]
-lengths = [10, 100, 1000]
+lengths = [10, 100, 1000]  # You can add more lengths if needed
 nbr_experiments = 3
 
 # Generate arrays for each length and experiment
@@ -47,8 +42,8 @@ inverse_sorted_arrays = [
     for size in lengths
 ]
 
-
-Metrics = namedtuple('Metrics', ['n','comparison_count', 'move_count'])
+# Metrics class to store results (n, comparison_count, move_count)
+Metrics = namedtuple('Metrics', ['n', 'comparison_count', 'move_count'])
 
 def selection_sort(arr):
     comparisons = 0
@@ -65,12 +60,45 @@ def selection_sort(arr):
             arr[i], arr[min_index] = arr[min_index], arr[i]
             move_count += 1
 
-    return Metrics(n,comparisons, move_count)
-
-## TODO: Complete the merge sort
+    return Metrics(n, comparisons, move_count)
 
 def merge_sort(arr):
-    pass
+    comparisons = 0
+    move_count = 0
+
+    def merge(left, right):
+        nonlocal comparisons, move_count
+        merged = []
+        i, j = 0, 0
+
+        # Merge two sorted arrays
+        while i < len(left) and j < len(right):
+            comparisons += 1
+            if left[i] <= right[j]:
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                j += 1
+            move_count += 1
+
+        # Append remaining elements
+        merged.extend(left[i:])
+        merged.extend(right[j:])
+        move_count += len(left[i:]) + len(right[j:])
+
+        return merged
+
+    def sort(arr):
+        if len(arr) <= 1:
+            return arr
+        mid = len(arr) // 2
+        left = sort(arr[:mid])
+        right = sort(arr[mid:])
+        return merge(left, right)
+
+    sorted_arr = sort(arr[:])  # Make a copy to avoid modifying the input
+    return Metrics(len(arr), comparisons, move_count)
 
 # Algorithms to benchmark
 funcs = [
@@ -121,7 +149,6 @@ df = pd.DataFrame(results)
 # Write the DataFrame to a CSV file
 csv_filename = "benchmark_extended_results.csv"
 df.to_csv(csv_filename, index=False)
-
 
 # Data Preprocessing: Convert time and memory columns to numeric
 df['time'] = pd.to_numeric(df['time'], errors='coerce')
