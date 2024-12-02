@@ -98,25 +98,25 @@ results = []
 
 for func in funcs:
     for length, random_arr, sorted_arr, inverse_arr in zip(lengths, random_arrays, sorted_arrays, inverse_sorted_arrays):
-        # إجراء التجربة للقائمة العشوائية
+        
         start_time = time.time()
         comparisons, swaps = func(random_arr)
         elapsed_time = time.time() - start_time
         results.append((func.__name__, length, "random", comparisons, swaps, elapsed_time))
 
-        # إجراء التجربة للقائمة المرتبة
+        
         start_time = time.time()
         comparisons, swaps = func(sorted_arr)
         elapsed_time = time.time() - start_time
         results.append((func.__name__, length, "sorted", comparisons, swaps, elapsed_time))
 
-        # إجراء التجربة للقائمة المرتبة عكسياً
+
         start_time = time.time()
         comparisons, swaps = func(inverse_arr)
         elapsed_time = time.time() - start_time
         results.append((func.__name__, length, "inverse_sorted", comparisons, swaps, elapsed_time))
 
-# عرض النتائج
+
 print("Function | Length | Array Type       | Comparisons | Swaps | Time (s)")
 print("---------|--------|------------------|-------------|-------|----------")
 for result in results:
