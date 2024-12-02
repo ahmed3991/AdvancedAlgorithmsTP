@@ -68,9 +68,54 @@ def selection_sort(arr):
     return Metrics(n,comparisons, move_count)
 
 ## TODO: Complete the merge sort
+Metrics = namedtuple('Metrics', ['arr', 'comparisons', 'moves'])
 
 def merge_sort(arr):
-    pass
+    # إذا كانت المصفوفة تحتوي على عنصر أو أقل، فهي بالفعل مرتبة
+    if len(arr) <= 1:
+        return Metrics(arr, 0, 0)  # إرجاع المصفوفة وعدد المقارنات والحركات
+
+    # تقسيم المصفوفة إلى جزئين
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    
+    # دمج الأجزاء المرتبة
+    merged = merge(left.arr, right.arr)  # تمرير arr فقط من left و right
+    
+    # جمع المقارنات والحركات من الأجزاء المختلفة
+    total_comparisons = left.comparisons + right.comparisons + merged.comparisons
+    total_moves = left.moves + right.moves + merged.moves
+    
+    # إرجاع النتيجة كـ namedtuple
+    return Metrics(merged.arr, total_comparisons, total_moves)
+
+def merge(left, right):
+    merged = []
+    comparisons = 0
+    moves = 0
+    i = 0
+    j = 0
+
+    # دمج الأجزاء
+    while i < len(left) and j < len(right):
+        comparisons += 1
+        if left[i] < right[j]:
+            merged.append(left[i])
+            i += 1
+            moves += 1
+        else:
+            merged.append(right[j])
+            j += 1
+            moves += 1
+
+    # إضافة العناصر المتبقية
+    merged.extend(left[i:])
+    merged.extend(right[j:])
+    
+    moves += len(left[i:]) + len(right[j:])
+    
+    return Metrics(merged, comparisons, moves)
 
 # Algorithms to benchmark
 funcs = [
@@ -103,6 +148,8 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                         "data_type": label,
                         "size": size,
                         "experiment": experiment_idx + 1,
+                        "comparison_count": logs['comparisons'],  # Make sure these are included
+                        "move_count": logs['moves'],
                     })
                     results.append(logs)
 
