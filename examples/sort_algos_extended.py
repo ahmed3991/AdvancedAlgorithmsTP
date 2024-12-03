@@ -1,142 +1,130 @@
+import numpy as np
+import time
 import pandas as pd
-from tqdm import tqdm
+import matplotlib.pyplot as plt
 
-import sys
-from pathlib import Path
-
-# Add parent directory to path
-sys.path.append(str(Path(__file__).parent.parent))
-
-from complexity import (
-    DataGeneratorFactory,
-    RandomDataGenerator,
-    LinearDataGenerator,
-    TimeAndSpaceProfiler,
-    ComplexityAnalyzer,
-    ComplexityVisualizer,
-    ComplexityDashboardVisualizer
-)
-
-from collections import namedtuple
-
-## TODO: Data Generation
-
-# Set up data generators
-factory = DataGeneratorFactory()
-factory.register_generator("random", RandomDataGenerator(0, 100))
-factory.register_generator("sorted", LinearDataGenerator())
-
-# Data generation
-#lengths = [10, 100, 1000, 10000]
-lengths = [10, 100, 1000]
-nbr_experiments = 3
-
-# Generate arrays for each length and experiment
-random_arrays = [
-    [factory.get_generator("random").generate(size) for _ in range(nbr_experiments)]
-    for size in lengths
-]
-
-sorted_arrays = [
-    [factory.get_generator("sorted").generate(size) for _ in range(nbr_experiments)]
-    for size in lengths
-]
-
-inverse_sorted_arrays = [
-    [list(reversed(factory.get_generator("sorted").generate(size))) for _ in range(nbr_experiments)]
-    for size in lengths
-]
-
-
-Metrics = namedtuple('Metrics', ['n','comparison_count', 'move_count'])
-
+# Selection Sort
 def selection_sort(arr):
-    comparisons = 0
-    move_count = 0
-    n = len(arr)
-
+    comparisons = [0]
+    moves = [0]
     for i in range(len(arr)):
-        min_index = i
-        for j in range(i + 1, len(arr)):
-            comparisons += 1
-            if arr[j] < arr[min_index]:
-                min_index = j
-        if min_index != i:
-            arr[i], arr[min_index] = arr[min_index], arr[i]
-            move_count += 1
+        min_idx = i
+        for j in range(i+1, len(arr)):
+            comparisons[0] += 1
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+        moves[0] += 1
+    return comparisons[0], moves[0]
 
-    return Metrics(n,comparisons, move_count)
+# Bubble Sort
+def bubble_sort(arr):
+    comparisons = [0]
+    moves = [0]
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            comparisons[0] += 1
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+                moves[0] += 1
+    return comparisons[0], moves[0]
 
-## TODO: Complete the merge sort
+# Insertion Sort (by shifting)
+def insertion_sort_shift(arr):
+    comparisons = [0]
+    moves = [0]
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            comparisons[0] += 1
+            arr[j + 1] = arr[j]
+            moves[0] += 1
+            j -= 1
+        arr[j + 1] = key
+    return comparisons[0], moves[0]
 
+# Merge Sort
 def merge_sort(arr):
-    pass
+    comparisons = [0]
+    moves = [0]
 
-# Algorithms to benchmark
-funcs = [
-    selection_sort,
-    merge_sort
-]
+    def merge(left, right):
+        merged = []
+        i = j = 0
+        while i < len(left) and j < len(right):
+            comparisons[0] += 1
+            if left[i] <= right[j]:
+                merged.append(left[i])
+                i += 1
+            else:
+                merged.append(right[j])
+                j += 1
+                moves[0] += 1
+        merged.extend(left[i:])
+        merged.extend(right[j:])
+        return merged
 
-# Benchmarking
-profiler = TimeAndSpaceProfiler()
-results = []
+    def sort(arr):
+        if len(arr) <= 1:
+            return arr
+        mid = len(arr) // 2
+        left = sort(arr[:mid])
+        right = sort(arr[mid:])
+        return merge(left, right)
 
-# Create a tqdm progress bar for tracking the experiments
-total_iterations = len(funcs) * len(lengths) * nbr_experiments * 3  # 3 for random, sorted, inverse_sorted
-with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pbar:
+    sorted_arr = sort(arr)
+    return comparisons[0], moves[0]
 
-    for func in funcs:
-        for size, random_experiments, sorted_experiments, inverse_sorted_experiments in zip(
-            lengths, random_arrays, sorted_arrays, inverse_sorted_arrays
-        ):
-            for experiment_idx in range(nbr_experiments):
-                for data, label in [
-                    (random_experiments[experiment_idx], "random"),
-                    (sorted_experiments[experiment_idx], "sorted"),
-                    (inverse_sorted_experiments[experiment_idx], "inverse_sorted"),
-                ]:
-                    # Run and profile
-                    logs = profiler.profile(func, data)
-                    logs.update({
-                        "algorithm": func.__name__,
-                        "data_type": label,
-                        "size": size,
-                        "experiment": experiment_idx + 1,
-                    })
-                    results.append(logs)
+# Function to analyze and compare algorithms
+def analyze_algorithms():
+    results = []
+    sizes = [1000, 5000, 10000]
 
-                    # Update tqdm progress bar with custom message
-                    pbar.set_postfix({
-                        'algorithm': func.__name__,
-                        'data_type': label,
-                        'size': size,
-                        'experiment': experiment_idx + 1,
-                    })
-                    pbar.update(1)
+    for size in sizes:
+        random_array = np.random.randint(0, 10000, size)
+        sorted_array = np.sort(random_array)
+        reverse_sorted_array = sorted_array[::-1]
 
-# Convert results to a pandas DataFrame
-df = pd.DataFrame(results)
+        for algo_name, algo in [("Selection Sort", selection_sort),
+                                ("Bubble Sort", bubble_sort),
+                                ("Insertion Sort (Shift)", insertion_sort_shift),
+                                ("Merge Sort", merge_sort)]:
+            for array_type, array in [("Random", random_array),
+                                      ("Sorted", sorted_array),
+                                      ("Reverse Sorted", reverse_sorted_array)]:
+                arr_copy = array.copy()
+                start_time = time.perf_counter()
+                comparisons, moves = algo(arr_copy)
+                end_time = time.perf_counter()
+                execution_time = end_time - start_time
+                results.append({
+                    "Algorithm": algo_name,
+                    "Array Type": array_type,
+                    "Size": size,
+                    "Comparisons": comparisons,
+                    "Moves": moves,
+                    "Execution Time (s)": execution_time
+                })
 
-# Write the DataFrame to a CSV file
-csv_filename = "benchmark_extended_results.csv"
-df.to_csv(csv_filename, index=False)
+    # Convert results into DataFrame
+    df = pd.DataFrame(results)
+    print(df)
+    df.to_csv("sorting_algorithms_comparison_results.csv", index=False)
 
+    # Plotting the results
+    plot_comparison(df)
 
-# Data Preprocessing: Convert time and memory columns to numeric
-df['time'] = pd.to_numeric(df['time'], errors='coerce')
-df['memory'] = pd.to_numeric(df['memory'], errors='coerce')
+# Plotting function for execution time comparison
+def plot_comparison(df):
+    df_pivot = df.pivot_table(index='Size', columns='Algorithm', values='Execution Time (s)', aggfunc='mean')
+    df_pivot.plot(kind='bar', figsize=(10,6))
+    plt.title('Comparison of Sorting Algorithms')
+    plt.ylabel('Execution Time (seconds)')
+    plt.xlabel('Array Size')
+    plt.show()
 
-# Grouping by algorithm, data_type, and size
-grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
-    'time': 'mean',
-    'memory': 'mean',
-    'comparison_count': 'mean',
-    'move_count': 'mean'
-}).reset_index()
-
-# Save both raw and grouped results for later analysis
-df.to_csv('sort_extended_results_raw.csv', index=False)
-grouped.to_csv('sort_extended_results_grouped.csv', index=False)
-
-print("\nResults have been saved to 'sort_extended_results_raw.csv' and 'sort_extended_results_grouped.csv'")
+# Run the analysis
+if __name__ == "__main__":
+    analyze_algorithms()
