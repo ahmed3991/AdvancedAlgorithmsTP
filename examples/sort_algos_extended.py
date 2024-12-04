@@ -70,7 +70,50 @@ def selection_sort(arr):
 ## TODO: Complete the merge sort
 
 def merge_sort(arr):
-    pass
+    n = len(arr)
+    comparisons = 0
+    moves = 0
+
+    def merge(left, right):
+        nonlocal comparisons, moves
+        merged = []
+        left_index, right_index = 0, 0
+
+        while left_index < len(left) and right_index < len(right):
+            comparisons += 1
+            if left[left_index] <= right[right_index]:
+                merged.append(left[left_index])
+                moves += 1
+                left_index += 1
+            else:
+                merged.append(right[right_index])
+                moves += 1
+                right_index += 1
+
+        merged.extend(left[left_index:])
+        moves += len(left) - left_index
+        merged.extend(right[right_index:])
+        moves += len(right) - right_index
+
+        return merged
+
+    if len(arr) <= 1:
+        return arr.copy(), Metrics(n, comparisons, moves)
+
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
+
+    left_sorted, left_metrics = merge_sort(left_half)
+    right_sorted, right_metrics = merge_sort(right_half)
+
+    sorted_arr = merge(left_sorted, right_sorted)
+
+    total_comparisons = comparisons + left_metrics.comparison_count + right_metrics.comparison_count
+    total_moves = moves + left_metrics.move_count + right_metrics.move_count
+
+    return sorted_arr, Metrics(n, total_comparisons, total_moves)
+
 
 # Algorithms to benchmark
 funcs = [
