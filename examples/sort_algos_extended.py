@@ -12,7 +12,6 @@ from complexity import (
     RandomDataGenerator,
     LinearDataGenerator,
     TimeAndSpaceProfiler,
-    time_and_space_profiler,
     ComplexityAnalyzer,
     ComplexityVisualizer,
     ComplexityDashboardVisualizer
