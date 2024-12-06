@@ -1,6 +1,6 @@
-## TODO: TP should be HERE
 import pandas as pd
 from tqdm import tqdm
+from tabulate import tabulate  
 
 import sys
 from pathlib import Path
@@ -20,19 +20,13 @@ from complexity import (
 
 from collections import namedtuple
 
-## TODO: Data Generation
-
-# Set up data generators
 factory = DataGeneratorFactory()
 factory.register_generator("random", RandomDataGenerator(0, 100))
 factory.register_generator("sorted", LinearDataGenerator())
 
-# Data generation
-#lengths = [10, 100, 1000, 10000]
 lengths = [10, 100, 1000]
 nbr_experiments = 3
 
-# Generate arrays for each length and experiment
 random_arrays = [
     [factory.get_generator("random").generate(size) for _ in range(nbr_experiments)]
     for size in lengths
@@ -48,8 +42,7 @@ inverse_sorted_arrays = [
     for size in lengths
 ]
 
-
-Metrics = namedtuple('Metrics', ['n','comparison_count', 'move_count'])
+Metrics = namedtuple('Metrics', ['n', 'comparison_count', 'move_count'])
 
 def selection_sort(arr):
     comparisons = 0
@@ -66,9 +59,7 @@ def selection_sort(arr):
             arr[i], arr[min_index] = arr[min_index], arr[i]
             move_count += 1
 
-    return Metrics(n,comparisons, move_count)
-
-## TODO: Complete the code
+    return Metrics(n, comparisons, move_count)
 
 def bubble_sort(arr):
     comparisons = 0
@@ -76,17 +67,13 @@ def bubble_sort(arr):
     n = len(arr)
 
     for i in range(n):
-        # Add a flag to track if any swaps occurred in this pass
         swapped = False
         for j in range(0, n - i - 1):
             comparisons += 1
             if arr[j] > arr[j + 1]:
-                # Swap elements
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 move_count += 1
                 swapped = True
-        
-        # If no swapping occurred, array is already sorted
         if not swapped:
             break
 
@@ -100,17 +87,14 @@ def insertion_sort_shifting(arr):
     for i in range(1, n):
         key = arr[i]
         j = i - 1
-
-        # Track comparisons explicitly
         while j >= 0:
-            comparisons += 1  # Count every comparison
+            comparisons += 1
             if arr[j] > key:
-                arr[j + 1] = arr[j]  # Shift
+                arr[j + 1] = arr[j]
                 move_count += 1
                 j -= 1
             else:
-                break  # Stop shifting when in correct position
-
+                break
         arr[j + 1] = key
 
     return Metrics(n, comparisons, move_count)
@@ -124,31 +108,66 @@ def insertion_sort_exchange(arr):
         j = i
         while j > 0 and arr[j] < arr[j - 1]:
             comparisons += 1
-            arr[j], arr[j - 1] = arr[j - 1], arr[j]  # Swap
+            arr[j], arr[j - 1] = arr[j - 1], arr[j]
             move_count += 1
             j -= 1
 
         if j > 0:
             comparisons += 1
 
-    return Metrics(n,comparisons, move_count)
+    return Metrics(n, comparisons, move_count)
 
-# Algorithms to benchmark
+def merge_sort(arr):
+    comparisons = 0
+    move_count = 0
+
+    def merge(left, right):
+        nonlocal comparisons, move_count
+        result = []
+        i = j = 0
+
+        while i < len(left) and j < len(right):
+            comparisons += 1
+            if left[i] <= right[j]:
+                result.append(left[i])
+                i += 1
+            else:
+                result.append(right[j])
+                j += 1
+                move_count += 1
+
+        result.extend(left[i:])
+        result.extend(right[j:])
+        move_count += len(left[i:]) + len(right[j:])
+        return result
+
+    def sort(arr):
+        if len(arr) <= 1:
+            return arr
+
+        mid = len(arr) // 2
+        left = sort(arr[:mid])
+        right = sort(arr[mid:])
+        return merge(left, right)
+
+    sorted_array = sort(arr)
+    arr[:] = sorted_array
+
+    return Metrics(len(arr), comparisons, move_count)
+
 funcs = [
     selection_sort,
     bubble_sort,
     insertion_sort_shifting,
     insertion_sort_exchange,
+    merge_sort,
 ]
 
-# Benchmarking
 profiler = TimeAndSpaceProfiler()
 results = []
 
-# Create a tqdm progress bar for tracking the experiments
-total_iterations = len(funcs) * len(lengths) * nbr_experiments * 3  # 3 for random, sorted, inverse_sorted
+total_iterations = len(funcs) * len(lengths) * nbr_experiments * 3
 with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pbar:
-
     for func in funcs:
         for size, random_experiments, sorted_experiments, inverse_sorted_experiments in zip(
             lengths, random_arrays, sorted_arrays, inverse_sorted_arrays
@@ -159,7 +178,6 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                     (sorted_experiments[experiment_idx], "sorted"),
                     (inverse_sorted_experiments[experiment_idx], "inverse_sorted"),
                 ]:
-                    # Run and profile
                     logs = profiler.profile(func, data)
                     logs.update({
                         "algorithm": func.__name__,
@@ -168,8 +186,6 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                         "experiment": experiment_idx + 1,
                     })
                     results.append(logs)
-
-                    # Update tqdm progress bar with custom message
                     pbar.set_postfix({
                         'algorithm': func.__name__,
                         'data_type': label,
@@ -178,19 +194,11 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                     })
                     pbar.update(1)
 
-# Convert results to a pandas DataFrame
 df = pd.DataFrame(results)
 
-# Write the DataFrame to a CSV file
-csv_filename = "benchmark_results.csv"
-df.to_csv(csv_filename, index=False)
+print("\n=== Raw results(Raw Results) ===")
+print(tabulate(df, headers='keys', tablefmt='pretty'))
 
-
-# Data Preprocessing: Convert time and memory columns to numeric
-df['time'] = pd.to_numeric(df['time'], errors='coerce')
-df['memory'] = pd.to_numeric(df['memory'], errors='coerce')
-
-# Grouping by algorithm, data_type, and size
 grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
     'time': 'mean',
     'memory': 'mean',
@@ -198,8 +206,5 @@ grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
     'move_count': 'mean'
 }).reset_index()
 
-# Save both raw and grouped results for later analysis
-df.to_csv('sort_results_raw.csv', index=False)
-grouped.to_csv('sort_results_grouped.csv', index=False)
-
-print("\nResults have been saved to 'sort_results_raw.csv' and 'sort_results_grouped.csv'")
+print("\n=== Aggregated results(Grouped Results) ===")
+print(tabulate(grouped, headers='keys', tablefmt='pretty'))
