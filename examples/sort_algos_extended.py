@@ -1,6 +1,6 @@
 import pandas as pd
 from tqdm import tqdm
-
+import random
 import sys
 from pathlib import Path
 
@@ -70,6 +70,53 @@ def selection_sort(arr):
 ## TODO: Complete the merge sort
 
 def merge_sort(arr):
+
+    # Base case: If the array has 1 or 0 elements, it's already sorted
+    if len(arr) <= 1:
+        return arr
+    
+    # Split the array into two halves
+    mid = len(arr) // 2
+    left_half = merge_sort(arr[:mid])
+    right_half = merge_sort(arr[mid:])
+    
+    # Merge the sorted halves
+    return merge(left_half, right_half)
+
+def merge(left, right):
+    sorted_array = []
+    i = j = 0
+    
+    # Compare elements from both halves and merge them in sorted order
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            sorted_array.append(left[i])
+            i += 1
+        else:
+            sorted_array.append(right[j])
+            j += 1
+    
+    # Append any remaining elements from the left half
+    while i < len(left):
+        sorted_array.append(left[i])
+        i += 1
+    
+    # Append any remaining elements from the right half
+    while j < len(right):
+        sorted_array.append(right[j])
+        j += 1
+    
+    return sorted_array
+
+if __name__ == "__main__":
+    r = int(input("Enter the size of the array: "))
+    data = [random.randint(0, 10000) for i in range(r)]  # Generate a random array of size 'r'
+    print(f"Sorting an array of size {r}...")
+    sorted_data = merge_sort(data)
+    print("Sorting complete.")
+    # Optionally, display a portion of the sorted array
+    print("First 10 elements of the sorted array:", sorted_data[:10])
+
     pass
 
 # Algorithms to benchmark
