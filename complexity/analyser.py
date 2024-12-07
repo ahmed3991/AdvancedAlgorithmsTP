@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
+from typing import List
+
 class ComplexityFunction(ABC):
     @abstractmethod
     def evaluate(self, x: np.ndarray) -> np.ndarray:
@@ -77,7 +79,7 @@ class LeastSquaresCalculator:
 
 
 class ComplexityAnalyzer:
-    def __init__(self, complexity_functions: list[ComplexityFunction] = None):
+    def __init__(self, complexity_functions: List[ComplexityFunction] = None):
         """
         Initialize the complexity analyzer.
         :param complexity_functions: Optional list of complexity functions. If None, uses defaults.

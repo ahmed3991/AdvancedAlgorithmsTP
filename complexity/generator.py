@@ -4,6 +4,7 @@ from typing import Any
 import random
 import numpy as np
 
+from typing import List
 
 import networkx as nx
 
@@ -14,7 +15,7 @@ class DataGenerator(ABC):
         pass
 
 class LinearDataGenerator(DataGenerator):
-    def generate(self, size: int) -> list[int]:
+    def generate(self, size: int) -> List[int]:
         return list(range(1, size + 1))
 
 class RandomDataGenerator(DataGenerator):
@@ -22,7 +23,7 @@ class RandomDataGenerator(DataGenerator):
         self.low = low
         self.high = high
 
-    def generate(self, size: int) -> list[int]:
+    def generate(self, size: int) -> List[int]:
         return [random.randint(self.low, self.high) for _ in range(size)]
 
 class GaussianDataGenerator(DataGenerator):
