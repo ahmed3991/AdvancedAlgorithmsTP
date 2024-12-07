@@ -32,6 +32,8 @@ $LCS(i,j) = \begin{cases}
 \max(LCS(i-1,j), LCS(i,j-1)) & \text{otherwise}
 \end{cases}$
 
+![LCS Recurrence Relation](https://latex.codecogs.com/png.latex?LCS(i,j)=\begin{cases}0&\text{if%20}i=0%20\text{or%20}j=0\\1+LCS(i-1,j-1)&\text{if%20}X[i-1]=Y[j-1]\\\max(LCS(i-1,j),%20LCS(i,j-1))&\text{otherwise}\end{cases})
+
 - Test this implementation on short strings to avoid long execution times.
 - Extend this approach by adding memoization to improve its efficiency.
 
@@ -44,6 +46,8 @@ $dp[i][j] = \begin{cases}
 dp[i-1][j-1] + 1 & \text{if } X[i-1] = Y[j-1] \\
 \max(dp[i-1][j], dp[i][j-1]) & \text{otherwise}
 \end{cases}$
+
+![Dynamic Programming Formula](https://latex.codecogs.com/png.latex?dp[i][j]=\begin{cases}0&\text{if%20}i=0%20\text{or%20}j=0\\dp[i-1][j-1]+1&\text{if%20}X[i-1]=Y[j-1]\\\max(dp[i-1][j],%20dp[i][j-1])&\text{otherwise}\end{cases})
 
 - Use this table to retrieve an LCS by traversing the data in reverse order.
 
