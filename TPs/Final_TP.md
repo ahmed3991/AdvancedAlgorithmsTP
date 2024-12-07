@@ -26,13 +26,8 @@ Given two strings `X` and `Y`, the Longest Common Subsequence (LCS) between thes
 
 - Implement a recursive solution based on the following recurrence relation:
 
-$LCS(i,j) = \begin{cases} 
-0 & \text{if } i = 0 \text{ or } j = 0 \\
-1 + LCS(i-1,j-1) & \text{if } X[i-1] = Y[j-1] \\
-\max(LCS(i-1,j), LCS(i,j-1)) & \text{otherwise}
-\end{cases}$
 
-![LCS Recurrence Relation](https://latex.codecogs.com/png.latex?LCS(i,j)=\begin{cases}0&\text{if%20}i=0%20\text{or%20}j=0\\1+LCS(i-1,j-1)&\text{if%20}X[i-1]=Y[j-1]\\\max(LCS(i-1,j),%20LCS(i,j-1))&\text{otherwise}\end{cases})
+![LCS Recurrence Relation](LCS_formula1.png)
 
 - Test this implementation on short strings to avoid long execution times.
 - Extend this approach by adding memoization to improve its efficiency.
@@ -41,13 +36,8 @@ $LCS(i,j) = \begin{cases}
 
 - Implement a solution based on dynamic programming. Construct a `dp` table of dimensions `(m+1) * (n+1)`, where `m` and `n` are the lengths of strings `X` and `Y`. Fill this table according to the rules:
 
-$dp[i][j] = \begin{cases} 
-0 & \text{if } i = 0 \text{ or } j = 0 \\
-dp[i-1][j-1] + 1 & \text{if } X[i-1] = Y[j-1] \\
-\max(dp[i-1][j], dp[i][j-1]) & \text{otherwise}
-\end{cases}$
 
-![Dynamic Programming Formula](https://latex.codecogs.com/png.latex?dp[i][j]=\begin{cases}0&\text{if%20}i=0%20\text{or%20}j=0\\dp[i-1][j-1]+1&\text{if%20}X[i-1]=Y[j-1]\\\max(dp[i-1][j],%20dp[i][j-1])&\text{otherwise}\end{cases})
+![Dynamic Programming Formula](LCS_formula2.png)
 
 - Use this table to retrieve an LCS by traversing the data in reverse order.
 
