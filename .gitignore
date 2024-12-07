@@ -1,2 +1,6 @@
 # created by virtualenv automatically
-*
+*.csv
+*.pyc
+__pycache__/
+venv
+test.py
