@@ -70,6 +70,7 @@ def selection_sort(arr):
 ## TODO: Complete the merge sort
 
 def merge_sort(arr):
+    # Salam git
     pass
 
 # Algorithms to benchmark
