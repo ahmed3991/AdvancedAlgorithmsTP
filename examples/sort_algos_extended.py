@@ -71,6 +71,7 @@ def selection_sort(arr):
 
 def merge_sort(arr):
     # Salam git
+    # salam 2
     pass
 
 # Algorithms to benchmark
