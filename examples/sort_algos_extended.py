@@ -69,8 +69,64 @@ def selection_sort(arr):
 
 ## TODO: Complete the merge sort
 
+
+from collections import namedtuple
+
+Metrics = namedtuple('Metrics', ['n', 'comparison_count', 'move_count'])
 def merge_sort(arr):
-    pass
+    """
+    Merge Sort implementation with tracking for comparison and move counts.
+    """
+    if len(arr) <= 1:
+        return Metrics(len(arr), 0, 0)
+
+    mid = len(arr) // 2
+    left = arr[:mid]
+    right = arr[mid:]
+
+    # Recursively sort both halves
+    left_metrics = merge_sort(left)
+    right_metrics = merge_sort(right)
+
+    # Merge the sorted halves
+    merged, merge_metrics = merge(left, right)
+
+    # Update the original array
+    arr[:] = merged
+
+    # Combine metrics
+    total_comparisons = left_metrics.comparison_count + right_metrics.comparison_count + merge_metrics.comparison_count
+    total_moves = left_metrics.move_count + right_metrics.move_count + merge_metrics.move_count
+
+    return Metrics(len(arr), total_comparisons, total_moves)
+
+def merge(left, right):
+    """
+    Helper function to merge two sorted lists while tracking metrics.
+    """
+    merged = []
+    comparisons = 0
+    moves = 0
+
+    i = j = 0
+
+    while i < len(left) and j < len(right):
+        comparisons += 1
+        if left[i] <= right[j]:
+            merged.append(left[i])
+            i += 1
+        else:
+            merged.append(right[j])
+            j += 1
+        moves += 1
+
+    # Append any remaining elements
+    merged.extend(left[i:])
+    merged.extend(right[j:])
+    moves += len(left[i:]) + len(right[j:])
+
+    return merged, Metrics(len(merged), comparisons, moves)
+
 
 # Algorithms to benchmark
 funcs = [
