@@ -60,9 +60,16 @@ class NumberGenerator(DataGenerator):
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
     def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+        self.alphabit = alphabit
+
+    def generate(self, size: int = 1) -> str:
+        if size < 1:
+            raise ValueError("Size must be a positive integer")
+        string1 = ""
+        for _ in range(size):
+            string1 += random.choice(self.alphabit)
+        return string1
+
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
@@ -71,7 +78,6 @@ class GraphGenerator(DataGenerator):
 
     def generate(self, size: int) -> nx.Graph:
         graph = nx.DiGraph() if self.directed else nx.Graph()
-
         # Create nodes
         for i in range(size):
             graph.add_node(i)
