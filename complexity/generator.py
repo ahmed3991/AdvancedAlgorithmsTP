@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Any
-
+from typing import List, Tuple
 import random
 import numpy as np
 
 
-import networkx as nx
+import networkx as nx 
 
 class DataGenerator(ABC):
     @abstractmethod
@@ -57,13 +57,36 @@ class NumberGenerator(DataGenerator):
         return random.randint(self.low, self.high)
 
 
-#TODO:add the string geneation logic
-class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+#TODO:add the string generation logic
+class StringGenerator:
+    def __init__(self, alphabet: List[str] = ['A', 'B', 'C']):
+        self.alphabet = alphabet
 
+    def generate(self, size: int = 1) -> str:
+        """
+        Generate a random string of the given size using the provided alphabet.
+        """
+        return ''.join(random.choice(self.alphabet) for _ in range(size))
+
+    def generate_pair(self, m: int, n: int, similarity: float = 0.0) -> Tuple[str, str]:
+        """
+        Generate a pair of strings with lengths m and n.
+        Optionally, similarity controls the proportion of characters that are identical in both strings.
+        """
+        if similarity < 0.0 or similarity > 1.0:
+            raise ValueError("Similarity must be between 0.0 and 1.0")
+
+        base_string = [random.choice(self.alphabet) for _ in range(min(m, n))]
+        num_same = int(similarity * len(base_string))
+
+        shared_indices = random.sample(range(len(base_string)), num_same)
+        for i in shared_indices:
+            base_string[i] = random.choice(self.alphabet)
+
+        str1 = ''.join(base_string[:m]) + ''.join(random.choices(self.alphabet, k=(m - len(base_string))))
+        str2 = ''.join(base_string[:n]) + ''.join(random.choices(self.alphabet, k=(n - len(base_string))))
+
+        return str1, str2
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
@@ -108,4 +131,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
