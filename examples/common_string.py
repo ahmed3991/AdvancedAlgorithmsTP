@@ -83,7 +83,7 @@ def benchmark_lcs(func, *args):
 
 
 # Testing and profiling LCS functions
-lengths = [10, 100, 1000]
+lengths = [10, 15, 20]
 nbr_experiments = 3
 results = []
 
