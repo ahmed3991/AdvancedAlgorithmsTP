@@ -44,5 +44,21 @@ def lcs_rec(x,y,i,j,memo):
     memo[(i,j)] = longest_string(lcs1,lcs2)
     return memo[(i,j)]
 
+def lcs_dp(x,y):
+
+    n=len(x)
+    m=len(y)
+
+    dp = [["" for _ in range(m+1)] for _ in range(n+1)]
+
+    for i in range(1,n+1):
+        for j in range(1, m+1):
+            if x[i-1] == y[j-1]:
+                dp[i][j] = dp[i-1][j-1] + x[i-1]
+            else:
+                dp[i][j] = dp[i-1][j] if len(dp[i-1][j])>len(dp[i][j-1]) else dp[i][j-1]
+                
+    return dp[n][m]
+
 
 ## Benchmarking
