@@ -1,10 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
-
 import random
 import numpy as np
-
-
 import networkx as nx
 
 class DataGenerator(ABC):
@@ -56,14 +53,29 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
-
-#TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+    def __init__(self, alphabet=['A', 'B', 'C']):
+        self.alphabet = alphabet
 
+    def generate(self, size: int = 1) -> str:
+        return ''.join(random.choice(self.alphabet) for _ in range(size))
+
+    def generate_pair(self, size1: int, size2: int) -> tuple:
+        return self.generate(size1), self.generate(size2)
+
+    def generate_similar_pair(self, size: int, similarity: float) -> tuple:
+        str1 = self.generate(size)
+        str2 = ''
+        for char in str1:
+            if random.random() < similarity:
+                str2 += char
+            else:
+                str2 += random.choice(self.alphabet)
+        return str1, str2
+
+    def generate_different_pair(self, size1: int, size2: int) -> tuple:
+        return self.generate(size1), self.generate(size2)
+    
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
@@ -85,8 +97,6 @@ class GraphGenerator(DataGenerator):
 
         return graph
 
-
-
 def main():
     # Factory setup
     factory = DataGeneratorFactory()
@@ -95,10 +105,15 @@ def main():
     factory.register_generator("gaussian", GaussianDataGenerator(0, 1))
     factory.register_generator("number", NumberGenerator(1, 100))
     factory.register_generator("graph", GraphGenerator(directed=True, weighted=True))
+    factory.register_generator("string", StringGenerator(alphabet=['A', 'B', 'C', 'D', 'E']))
 
     # Generate a number
     number_generator = factory.get_generator("number")
     print(f"Generated Number: {number_generator.generate()}")
+
+    # Generate a string
+    string_generator = factory.get_generator("string")
+    print(f"Generated String: {string_generator.generate(10)}")
 
     # Generate a graph
     graph_generator = factory.get_generator("graph")
@@ -108,4 +123,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
