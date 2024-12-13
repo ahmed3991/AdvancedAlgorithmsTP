@@ -26,20 +26,23 @@ from complexity import (
 def longest_string(x,y):
     return x if len(x) > len (y) else y
 
-def lcs_rec(x,y,i,j):
+def lcs_rec(x,y,i,j,memo):
+
+    if(i,j) in memo:
+        return memo[(i,j)]
+
     if i == 0 or j == 0 :
         return ""
     
     if x[i-1] == y [j-1]:
-        return lcs_rec(x,y,i-1,j-1) + x[i-1]
+        memo[(i,j)] = lcs_rec(x,y,i-1,j-1,memo) + x[i-1]
+        return memo[(i,j)]
     
-    lcs1=lcs_rec(x,y,i-1,j)
-    lcs2=lcs_rec(x,y,i,j-1)
+    lcs1=lcs_rec(x,y,i-1,j,memo)
+    lcs2=lcs_rec(x,y,i,j-1,memo)
 
-    return longest_string(lcs1,lcs2)
+    memo[(i,j)] = longest_string(lcs1,lcs2)
+    return memo[(i,j)]
 
-x="AGGTAB"
-y="GXTXAYB"
-print(lcs_rec(x,y,len(x),len(y)))
 
 ## Benchmarking
