@@ -37,10 +37,11 @@ different_pairs = [
 ]
 
 identical_pairs = [
-    [factory.get_generator("string").generate_ident_pair(size,size) for _ in range(nbr_experiments)]
+    [factory.get_generator("string").generate_ident_pair(size) for _ in range(nbr_experiments)]
     for size in lengths
 ]
 
+print(random_pairs[1])
 
 ## Functions
 
