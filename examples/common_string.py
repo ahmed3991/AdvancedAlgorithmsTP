@@ -21,12 +21,15 @@ from complexity import (
 
 ## Data Generation
 
+factory = DataGeneratorFactory()
+factory.register_generator()
+
 ## Functions
 
 def longest_string(x,y):
     return x if len(x) > len (y) else y
 
-def lcs_rec(x,y,i,j,memo):
+def lcs_rec_memo(x,y,i,j,memo):
 
     if(i,j) in memo:
         return memo[(i,j)]
@@ -35,14 +38,27 @@ def lcs_rec(x,y,i,j,memo):
         return ""
     
     if x[i-1] == y [j-1]:
-        memo[(i,j)] = lcs_rec(x,y,i-1,j-1,memo) + x[i-1]
+        memo[(i,j)] = lcs_rec_memo(x,y,i-1,j-1,memo) + x[i-1]
         return memo[(i,j)]
     
-    lcs1=lcs_rec(x,y,i-1,j,memo)
-    lcs2=lcs_rec(x,y,i,j-1,memo)
+    lcs1=lcs_rec_memo(x,y,i-1,j,memo)
+    lcs2=lcs_rec_memo(x,y,i,j-1,memo)
 
     memo[(i,j)] = longest_string(lcs1,lcs2)
     return memo[(i,j)]
+
+def lcs_rec(x,y,i,j):
+
+    if i == 0 or j == 0 :
+        return ""
+
+    if x[i-1]==y[j-1] :
+        return lcs_rec(x,y,i-1,j-1) + x[i-1]
+    
+    lcs1 = lcs_rec(x,y,i-1,j)
+    lcs2 = lcs_rec(x,y,i,j-1)
+
+    return longest_string(lcs1,lcs2)
 
 def lcs_dp(x,y):
 
@@ -57,7 +73,7 @@ def lcs_dp(x,y):
                 dp[i][j] = dp[i-1][j-1] + x[i-1]
             else:
                 dp[i][j] = dp[i-1][j] if len(dp[i-1][j])>len(dp[i][j-1]) else dp[i][j-1]
-                
+
     return dp[n][m]
 
 
