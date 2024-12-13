@@ -10,8 +10,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from complexity import (
     DataGeneratorFactory,
-    RandomDataGenerator,
-    LinearDataGenerator,
+    StringGenerator,
     TimeAndSpaceProfiler,
     ComplexityAnalyzer,
     ComplexityVisualizer,
@@ -22,7 +21,26 @@ from complexity import (
 ## Data Generation
 
 factory = DataGeneratorFactory()
-factory.register_generator()
+factory.register_generator("string",StringGenerator(['A','B','C','D','E']))
+
+lengths = [10, 100, 1000]
+nbr_experiments=3
+
+random_pairs = [
+    [factory.get_generator("string").generate_pair(size,size) for _ in range(nbr_experiments)]
+    for size in lengths
+]
+
+different_pairs = [
+    [factory.get_generator("string").generate_diff_pair(size,size) for _ in range(nbr_experiments)]
+    for size in lengths
+]
+
+identical_pairs = [
+    [factory.get_generator("string").generate_ident_pair(size,size) for _ in range(nbr_experiments)]
+    for size in lengths
+]
+
 
 ## Functions
 
