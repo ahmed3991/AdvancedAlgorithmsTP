@@ -1,6 +1,6 @@
 import pandas as pd
 from tqdm import tqdm
-
+import random
 import sys
 from pathlib import Path
 
@@ -19,15 +19,11 @@ from complexity import (
 
 from collections import namedtuple
 
-## TODO: Data Generation
-
-# Set up data generators
+# Data Generation
 factory = DataGeneratorFactory()
 factory.register_generator("random", RandomDataGenerator(0, 100))
 factory.register_generator("sorted", LinearDataGenerator())
 
-# Data generation
-#lengths = [10, 100, 1000, 10000]
 lengths = [10, 100, 1000]
 nbr_experiments = 3
 
@@ -47,8 +43,7 @@ inverse_sorted_arrays = [
     for size in lengths
 ]
 
-
-Metrics = namedtuple('Metrics', ['n','comparison_count', 'move_count'])
+Metrics = namedtuple('Metrics', ['n', 'comparison_count', 'move_count'])
 
 def selection_sort(arr):
     comparisons = 0
@@ -65,25 +60,58 @@ def selection_sort(arr):
             arr[i], arr[min_index] = arr[min_index], arr[i]
             move_count += 1
 
-    return Metrics(n,comparisons, move_count)
-
-## TODO: Complete the merge sort
+    return Metrics(n, comparisons, move_count)
 
 def merge_sort(arr):
-    pass
+    n = len(arr)
+    if n <= 1:
+        return Metrics(n, 0, 0)
 
-# Algorithms to benchmark
+    mid = n // 2
+    left = arr[:mid]
+    right = arr[mid:]
+
+    metrics_left = merge_sort(left)
+    metrics_right = merge_sort(right)
+    i = j = k = 0
+
+    comparisons = metrics_left.comparison_count + metrics_right.comparison_count
+    move_count = metrics_left.move_count + metrics_right.move_count
+
+    while i < len(left) and j < len(right):
+        comparisons += 1
+        if left[i] < right[j]:
+            arr[k] = left[i]
+            i += 1
+        else:
+            arr[k] = right[j]
+            j += 1
+        k += 1
+        move_count += 1
+
+    while i < len(left):
+        arr[k] = left[i]
+        i += 1
+        k += 1
+        move_count += 1
+
+    while j < len(right):
+        arr[k] = right[j]
+        j += 1
+        k += 1
+        move_count += 1
+
+    return Metrics(n, comparisons, move_count)
+
 funcs = [
     selection_sort,
     merge_sort
 ]
 
-# Benchmarking
 profiler = TimeAndSpaceProfiler()
 results = []
 
-# Create a tqdm progress bar for tracking the experiments
-total_iterations = len(funcs) * len(lengths) * nbr_experiments * 3  # 3 for random, sorted, inverse_sorted
+total_iterations = len(funcs) * len(lengths) * nbr_experiments * 3
 with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pbar:
 
     for func in funcs:
@@ -96,7 +124,6 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                     (sorted_experiments[experiment_idx], "sorted"),
                     (inverse_sorted_experiments[experiment_idx], "inverse_sorted"),
                 ]:
-                    # Run and profile
                     logs = profiler.profile(func, data)
                     logs.update({
                         "algorithm": func.__name__,
@@ -106,7 +133,6 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                     })
                     results.append(logs)
 
-                    # Update tqdm progress bar with custom message
                     pbar.set_postfix({
                         'algorithm': func.__name__,
                         'data_type': label,
@@ -115,19 +141,14 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                     })
                     pbar.update(1)
 
-# Convert results to a pandas DataFrame
 df = pd.DataFrame(results)
 
-# Write the DataFrame to a CSV file
 csv_filename = "benchmark_extended_results.csv"
 df.to_csv(csv_filename, index=False)
 
-
-# Data Preprocessing: Convert time and memory columns to numeric
 df['time'] = pd.to_numeric(df['time'], errors='coerce')
 df['memory'] = pd.to_numeric(df['memory'], errors='coerce')
 
-# Grouping by algorithm, data_type, and size
 grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
     'time': 'mean',
     'memory': 'mean',
@@ -135,7 +156,6 @@ grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
     'move_count': 'mean'
 }).reset_index()
 
-# Save both raw and grouped results for later analysis
 df.to_csv('sort_extended_results_raw.csv', index=False)
 grouped.to_csv('sort_extended_results_grouped.csv', index=False)
 
