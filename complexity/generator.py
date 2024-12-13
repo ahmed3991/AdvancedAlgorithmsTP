@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import List,Any
 
 import random
 import numpy as np
@@ -56,13 +56,39 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
-
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
+    def __init__(self, alphabit: List[str] = ['A', 'B', 'C']):
+
+        self.alphabet = alphabit
+        
     def generate(self, size: int = 1) -> int:
-        pass
+
+        return ''.join(random.choice(self.alphabet) for _ in range(size))
+    
+    def generate_pair(self, size1: int, size2: int) -> (str, str):
+
+        str1 = self.generate(size1)
+        str2 = self.generate(size2)
+        return str1, str2 
+
+    def generate_similar_strings(self, size: int, mutation_rate: float = 0.1) -> (str, str):
+        
+        base_string = self.generate(size)
+        str1, str2 = list(base_string), list(base_string)
+        for i in range(size):
+            if random.random() < mutation_rate:
+                str2[i] = random.choice(self.alphabet)
+        return ''.join(str1), ''.join(str2) 
+
+    def generate_different_strings(self, size: int) -> (str, str): 
+
+        str1 = self.generate(size)
+        while True:
+            str2 = self.generate(size)
+            if str1 != str2:  # Ensure the strings are different
+               break
+        return str1, str2
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
