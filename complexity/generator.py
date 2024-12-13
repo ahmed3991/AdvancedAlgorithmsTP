@@ -80,7 +80,7 @@ class StringGenerator(DataGenerator):
         return(str1,str2)
     
     def generate_ident_pair(self, size: int) -> tuple:
-        str1 = str2 = self.geneate(size)
+        str1 = str2 = self.generate(size)
         return (str1,str2)
 
 class GraphGenerator(DataGenerator):

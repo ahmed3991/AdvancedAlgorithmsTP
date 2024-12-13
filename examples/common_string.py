@@ -27,21 +27,18 @@ lengths = [10, 100, 1000]
 nbr_experiments=3
 
 random_pairs = [
-    [factory.get_generator("string").generate_pair(size,size) for _ in range(nbr_experiments)]
-    for size in lengths
+    factory.get_generator("string").generate_pair(size,size) for _ in range(nbr_experiments) for size in lengths
 ]
 
 different_pairs = [
-    [factory.get_generator("string").generate_diff_pair(size,size) for _ in range(nbr_experiments)]
-    for size in lengths
+    factory.get_generator("string").generate_diff_pair(size,size) for _ in range(nbr_experiments) for size in lengths
 ]
 
 identical_pairs = [
-    [factory.get_generator("string").generate_ident_pair(size) for _ in range(nbr_experiments)]
-    for size in lengths
+    factory.get_generator("string").generate_ident_pair(size) for _ in range(nbr_experiments) for size in lengths
 ]
 
-print(random_pairs[1])
+print(random_pairs[0])
 
 ## Functions
 
