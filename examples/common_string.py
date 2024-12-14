@@ -89,11 +89,28 @@ def lcs_Dynamic(X, Y):
 
     return Metrics(dp[m][n], comparison_count)
 
+def lcs_Dynamic_Optimized(X, Y):
+    m, n = len(X), len(Y)
+    prev = [0] * (n + 1)  
+    curr = [0] * (n + 1)  
+    comparison_count = 0
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            comparison_count += 1
+            if X[i - 1] == Y[j - 1]:
+                curr[j] = prev[j - 1] + 1
+            else:
+                curr[j] = max(prev[j], curr[j - 1])
+        prev, curr = curr, prev  
+    return Metrics(prev[n], comparison_count)
+
+
 # Algorithms to benchmark
 LCS_algorithms = [
     lcs_recursive,
     lcs_recursive_memoization,
-    lcs_Dynamic
+    lcs_Dynamic,
+    lcs_Dynamic_Optimized  
 ]
 
 # Initialize profiler
@@ -154,4 +171,4 @@ grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
 df.to_csv('lcs_results_raw.csv', index=False)
 grouped.to_csv('lcs_results_grouped.csv', index=False)
 
-print("\nResults have been saved to 'lcs_results_raw.csv' and 'lcs_results_grouped.csv'")
+print("\nResults have been saved to 'lcs_results_raw.csv' and 'lcs_results_grouped.csv")
