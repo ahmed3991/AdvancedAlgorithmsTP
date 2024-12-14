@@ -1,0 +1,7 @@
+
+temps dexecution : la méthode récursive sans mémorisation est la plus lente pour les longues chaînes.
+ ensuite vient la version avec mémorisation, et enfin la méthode dynamique, qui est généralement la plus
+  rapide.
+
+memoire : la méthode récursive sans mémorisation et la version avec mémorisation utilisent le moins de
+ mémoire.. la méthode dynamique consomme le plus de mémoire car elle utilise un tableau complet.
