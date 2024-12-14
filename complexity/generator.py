@@ -59,10 +59,28 @@ class NumberGenerator(DataGenerator):
 
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
+    def __init__(self,alphabit):
+        self.alphabet = alphabit
     def generate(self, size: int = 1) -> int:
-        pass
+        return ''.join(random.choices(self.alphabet, k=size)) 
+    def create_similar_word(self, word: str, length: int, similarity: float) -> str:
+        similar_word = list(word) 
+        changes = int(length * (1 - similarity)) 
+        for _ in range(changes):
+            idx = random.randint(0, length - 1)
+            similar_word[idx] = random.choice(self.alphabet)
+        return ''.join(similar_word)
+        
+    def Pair_generator (self, w1_lenght : int , w2_length : int) :
+        Word1 = self.generate(w1_lenght)
+        Word2 = self.generate(w2_length)
+        return Word1,Word2
+    
+    def Pair_Similar (self, w1_lenght : int , w2_length : int, similarity :float):
+        word1 = self.generate(w1_lenght)
+        word2 = self.create_similar_word(word1, w2_length, similarity)
+        return word1, word2
+        
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
