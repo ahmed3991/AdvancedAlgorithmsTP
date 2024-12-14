@@ -18,7 +18,7 @@ class LinearDataGenerator(DataGenerator):
         return list(range(1, size + 1))
 
 class RandomDataGenerator(DataGenerator):
-    def __init__(self, low: int = 0, high: int = 100):
+    def init(self, low: int = 0, high: int = 100):
         self.low = low
         self.high = high
 
@@ -26,7 +26,7 @@ class RandomDataGenerator(DataGenerator):
         return [random.randint(self.low, self.high) for _ in range(size)]
 
 class GaussianDataGenerator(DataGenerator):
-    def __init__(self, mean: float = 0, std: float = 1):
+    def init(self, mean: float = 0, std: float = 1):
         self.mean = mean
         self.std = std
 
@@ -34,7 +34,7 @@ class GaussianDataGenerator(DataGenerator):
         return np.random.normal(self.mean, self.std, size)
 
 class DataGeneratorFactory:
-    def __init__(self):
+    def init(self):
         self.generators = {}
 
     def register_generator(self, name: str, generator: DataGenerator):
@@ -46,7 +46,7 @@ class DataGeneratorFactory:
         return self.generators[name]
 
 class NumberGenerator(DataGenerator):
-    def __init__(self, low: int = 0, high: int = 100, fixed: int = None):
+    def init(self, low: int = 0, high: int = 100, fixed: int = None):
         self.low = low
         self.high = high
         self.fixed = fixed
@@ -87,9 +87,10 @@ class StringGenerator(DataGenerator):
     def generate_different_pair(self, size1: int, size2: int) -> tuple:
         # Generate a pair of entirely different strings
         return self.generate(size1), self.generate(size2)
-
+    
+    
 class GraphGenerator(DataGenerator):
-    def __init__(self, directed: bool = False, weighted: bool = True):
+    def init(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
         self.weighted = weighted
 
@@ -130,6 +131,6 @@ def main():
     print("Generated Graph:")
     print(graph.edges(data=True))  # Print edges with weights
 
-if __name__ == "__main__":
+if __name__ == "main":
     main()
 
