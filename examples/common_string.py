@@ -58,7 +58,7 @@ def lcs_dynamic(x, y):
 profiler = TimeAndSpaceProfiler()
 
 # Generate strings using StringGenerator
-lengths = [10, 20]
+lengths = [3, 5, 6, 8, 10, 13, 15, 20]
 gen = StringGenerator(alphabet=['A', 'B', 'C', 'D'], string_length=max(lengths))
 string_pairs = [(gen.generate(length), gen.generate(length)) for length in lengths]
 
