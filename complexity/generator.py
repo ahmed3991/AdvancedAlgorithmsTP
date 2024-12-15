@@ -1,75 +1,80 @@
 from abc import ABC, abstractmethod
 from typing import Any
-
 import random
 import numpy as np
-
-
 import networkx as nx
 
-class DataGenerator(ABC):
+
+# Abstract Base Class for Data Generators
+class DataProducer(ABC):
     @abstractmethod
-    def generate(self, size: int) -> Any:
+    def produce(self, size: int) -> Any:
         """Generate synthetic data of the given size."""
         pass
 
-class LinearDataGenerator(DataGenerator):
-    def generate(self, size: int) -> list[int]:
+# Linear Data Producer
+class LinearDataProducer(DataProducer):
+    def produce(self, size: int) -> list[int]:
         return list(range(1, size + 1))
 
-class RandomDataGenerator(DataGenerator):
-    def __init__(self, low: int = 0, high: int = 100):
+# Random Data Producer
+class RandomDataProducer(DataProducer):
+    def initialize(self, low: int = 0, high: int = 100):
         self.low = low
         self.high = high
 
-    def generate(self, size: int) -> list[int]:
+    def produce(self, size: int) -> list[int]:
         return [random.randint(self.low, self.high) for _ in range(size)]
 
-class GaussianDataGenerator(DataGenerator):
-    def __init__(self, mean: float = 0, std: float = 1):
+# Gaussian Data Producer
+class GaussianDataProducer(DataProducer):
+    def initialize(self, mean: float = 0, std: float = 1):
         self.mean = mean
         self.std = std
 
-    def generate(self, size: int) -> np.ndarray:
+    def produce(self, size: int) -> np.ndarray:
         return np.random.normal(self.mean, self.std, size)
 
-class DataGeneratorFactory:
-    def __init__(self):
-        self.generators = {}
+# Factory for Data Producers
+class DataProducerFactory:
+    def initialize(self):
+        self.producers = {}
 
-    def register_generator(self, name: str, generator: DataGenerator):
-        self.generators[name] = generator
+    def register_producer(self, name: str, producer: DataProducer):
+        self.producers[name] = producer
 
-    def get_generator(self, name: str) -> DataGenerator:
-        if name not in self.generators:
-            raise ValueError(f"Generator '{name}' not found.")
-        return self.generators[name]
+    def get_producer(self, name: str) -> DataProducer:
+        if name not in self.producers:
+            raise ValueError(f"Producer '{name}' not found.")
+        return self.producers[name]
 
-class NumberGenerator(DataGenerator):
-    def __init__(self, low: int = 0, high: int = 100, fixed: int = None):
+# Integer Producer
+class IntegerProducer(DataProducer):
+    def initialize(self, low: int = 0, high: int = 100, fixed: int = None):
         self.low = low
         self.high = high
         self.fixed = fixed
 
-    def generate(self, size: int = 1) -> int:
+    def produce(self, size: int = 1) -> int:
         if self.fixed is not None:
             return self.fixed
         return random.randint(self.low, self.high)
 
+# String Producer
+class StringProducer(DataProducer):
+    def initialize(self, alphabet=['A', 'B', 'C']):
+        self.alphabet = alphabet
 
-#TODO:add the string geneation logic
-class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+    def produce(self, size: int = 1) -> str:
+        return ''.join(random.choices(self.alphabet, k=size))
 
-class GraphGenerator(DataGenerator):
-    def __init__(self, directed: bool = False, weighted: bool = True):
+# Graph Producer
+class GraphProducer(DataProducer):
+    def initialize(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
         self.weighted = weighted
 
-    def generate(self, size: int) -> nx.Graph:
+    def produce(self, size: int) -> nx.Graph:
         graph = nx.DiGraph() if self.directed else nx.Graph()
 
         # Create nodes
@@ -85,27 +90,31 @@ class GraphGenerator(DataGenerator):
 
         return graph
 
-
-
+# Main function for testing
 def main():
     # Factory setup
-    factory = DataGeneratorFactory()
-    factory.register_generator("linear", LinearDataGenerator())
-    factory.register_generator("random", RandomDataGenerator(0, 50))
-    factory.register_generator("gaussian", GaussianDataGenerator(0, 1))
-    factory.register_generator("number", NumberGenerator(1, 100))
-    factory.register_generator("graph", GraphGenerator(directed=True, weighted=True))
+    factory = DataProducerFactory()
+    factory.register_producer("linear", LinearDataProducer())
+    factory.register_producer("random", RandomDataProducer(0, 50))
+    factory.register_producer("gaussian", GaussianDataProducer(0, 1))
+    factory.register_producer("integer", IntegerProducer(1, 100))
+    factory.register_producer("graph", GraphProducer(directed=True, weighted=True))
+    factory.register_producer("string", StringProducer(['A', 'C', 'G', 'T']))
 
     # Generate a number
-    number_generator = factory.get_generator("number")
-    print(f"Generated Number: {number_generator.generate()}")
+    integer_producer = factory.get_producer("integer")
+    print(f"Generated Integer: {integer_producer.produce()}")
 
     # Generate a graph
-    graph_generator = factory.get_generator("graph")
-    graph = graph_generator.generate(5)
+    graph_producer = factory.get_producer("graph")
+    graph = graph_producer.produce(5)
     print("Generated Graph:")
     print(graph.edges(data=True))  # Print edges with weights
 
+    # Generate a string
+    string_producer = factory.get_producer("string")
+    random_string = string_producer.produce(10)
+    print(f"Generated String: {random_string}")
+
 if __name__ == "__main__":
     main()
-
