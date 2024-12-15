@@ -60,21 +60,9 @@ class NumberGenerator(DataGenerator):
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
     def __init__(self,alphabit=['A','B','C']):
-        self.alphabit = alphabit if alphabit else ['A', 'B', 'C']
+        pass
     def generate(self, size: int = 1) -> int:
-        return ''.join(random.choices(self.alphabit, k=size))
-    def generate_pair(self, size1: int, size2: int, similarity: float = 0.5) -> tuple[str, str]:
-        common_size = int(min(size1, size2) * similarity)
-
-
-        common_part = ''.join(random.choices(self.alphabit, k=common_size))
-        str1_unique = ''.join(random.choices(self.alphabit, k=size1 - common_size))
-        str2_unique = ''.join(random.choices(self.alphabit, k=size2 - common_size))
-        str1 = common_part + str1_unique
-        str2 = common_part + str2_unique
-        str1 = ''.join(random.sample(str1, len(str1)))
-        str2 = ''.join(random.sample(str2, len(str2)))
-        return str1, str2
+        pass
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
