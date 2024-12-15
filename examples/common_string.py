@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../complexity")))
@@ -54,15 +55,17 @@ def Lcs_dp(x: str, y: str) -> int:
     return dp[m][n]
 
 ## Save LCS performance results to a CSV file
-def Save_results(str_lengths, recursive_times, dp_times, memory_usage_recursive, memory_usage_dp):
+def Save_results(str_lengths, recursive_times,recursive_memo_times ,dp_times, memory_usage_recursive,memory_usage_recursive_memo, memory_usage_dp):
 
     data = {
         "String Length": str_lengths,
         "Recursive Time": recursive_times,
+        "Recursive Memo Time":recursive_memo_times,
         "DP Time": dp_times,
         "Recursive Memory usage ": memory_usage_recursive,
+        "Recursive memoized Memory usage":memory_usage_recursive_memo,
         "DP Memory usage": memory_usage_dp
-    }
+    }    
     df = pd.DataFrame(data)
     df.to_csv("lcs_performance_results.csv", index=False)
     print("Results saved to lcs_performance_results.csv")
@@ -72,15 +75,18 @@ def Test_lcs_performance():
 
     # Generate strings
     string_generator = StringGenerator(['A', 'B', 'C', 'D'])
-    str_lengths = np.array([10, 20, 30, 40, 50])
+    str_lengths = np.array([3 , 6, 12, 15, 16])
     recursive_times = []
+    recursive_memoized_times = []
     dp_times = []
     memory_usage_recursive = []
+    memory_usage_recursive_memoized = [] 
     memory_usage_dp = []
 
     profiler = TimeAndSpaceProfiler()
 
-    for length in str_lengths:
+    # for length in str_lengths:
+    for length in tqdm(str_lengths, desc="Running LCS Performance Tests"):    
         str1 = string_generator.generate(length)
         str2 = string_generator.generate(length)
 
@@ -89,35 +95,51 @@ def Test_lcs_performance():
         recursive_times.append(result["time"])
         memory_usage_recursive.append(result["memory"]) 
 
+        # Measure memoized recursive execution time and memory usage
+        result = profiler.profile(Lcs_recursive_with_memoization, str1, str2, {})
+        recursive_memoized_times.append(result["time"])
+        memory_usage_recursive_memoized.append(result["memory"])
+
         # Measure dynamic programming execution time and mamory usage
         result = profiler.profile(Lcs_dp, str1, str2)
         dp_times.append(result['time'])
         memory_usage_dp.append(result['memory'])
     
-    Save_results(str_lengths, recursive_times, dp_times, memory_usage_recursive, memory_usage_dp)
+    Save_results(str_lengths, recursive_times, recursive_memoized_times, dp_times, memory_usage_recursive, memory_usage_recursive_memoized, memory_usage_dp)
 
     # Analyze and visualize
     analyzer = ComplexityAnalyzer()
     recursive_complexity = analyzer.get_best_fit(str_lengths, np.array(recursive_times))
+    memoized_complexity = analyzer.get_best_fit(str_lengths, np.array(recursive_times))
     dp_complexity = analyzer.get_best_fit(str_lengths, np.array(dp_times))
 
     print(f"Recursive complexity fit: {recursive_complexity}")
+    print(f"Memoized recursive complexity fit: {memoized_complexity}")
     print(f"Dynamic programming complexity fit: {dp_complexity}")
 
+    recursive_complexity_name = recursive_complexity[0]
+    memoized_complexity_name = memoized_complexity[0]
+    dp_complexity_name = dp_complexity[0] 
+    
     # Visualize  execution time performance for recursive dynamic programming
     visualizer = ComplexityVisualizer( str_lengths, np.array(recursive_times), analyzer.complexity_functions)
-    visualizer.plot(recursive_complexity, title="Recursive LCS Performance")
+    visualizer.plot(recursive_complexity_name, title="Recursive LCS Performance")
+
+    visualizer = ComplexityVisualizer(str_lengths, np.array(recursive_memoized_times), analyzer.complexity_functions)
+    visualizer.plot(memoized_complexity_name, title="Memoized Recursive LCS Performance")
 
     visualizer = ComplexityVisualizer(str_lengths, np.array(dp_times), analyzer.complexity_functions)
-    visualizer.plot(dp_complexity, title="Dynamic Programming LCS Performance")
+    visualizer.plot(dp_complexity_name, title="Dynamic Programming LCS Performance")
 
-    # Visualize memory usage for recursive dynamic programming
+    # Visualize memory usage for recursive with and without memoiasation dynamic programming
     memory_visualizer = ComplexityVisualizer( str_lengths, np.array(memory_usage_recursive), analyzer.complexity_functions)
-    memory_visualizer.plot("Memory Recursive", title="Memory Usage Recursive")
+    memory_visualizer.plot(recursive_complexity_name, title="Memory Usage Recursive")
+
+    memory_visualizer = ComplexityVisualizer(str_lengths, np.array(memory_usage_recursive_memoized), analyzer.complexity_functions)
+    memory_visualizer.plot(memoized_complexity_name, title="Memory Usage Memoized")
 
     memory_visualizer = ComplexityVisualizer(str_lengths, np.array(memory_usage_dp), analyzer.complexity_functions)
-    memory_visualizer.plot("Memory DP", title="Memory Usage DP")
-
+    memory_visualizer.plot(dp_complexity_name, title="Memory Usage DP")
 
 if __name__ == "__main__":
     Test_lcs_performance()
