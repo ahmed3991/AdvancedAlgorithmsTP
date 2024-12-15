@@ -85,7 +85,7 @@ def bubble_sort(arr):
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
                 move_count += 1
                 swapped = True
-        
+
         # If no swapping occurred, array is already sorted
         if not swapped:
             break

@@ -57,12 +57,55 @@ class NumberGenerator(DataGenerator):
         return random.randint(self.low, self.high)
 
 
-#TODO:add the string geneation logic
+#TODO:add the string generation logic
+
+class DataGenerator:
+    def generate(self, size: int = 1):
+        raise NotImplementedError("Subclasses must implement this method.")
+
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+    def __init__(self, alphabet=['A', 'B', 'C']):
+        """
+        Initializes the StringGenerator with a given alphabet.
+        :param alphabet: List of characters to generate strings from.
+        """
+        self.alphabet = alphabet
+
+    def generate(self, size: int = 1) -> str:
+        """
+        Generates a random string of the given size using the alphabet.
+        :param size: Length of the string to generate.
+        :return: A random string.
+        """
+        return ''.join(random.choice(self.alphabet) for _ in range(size))
+
+    def generate_pair(self, m: int, n: int, similarity: float = 0.0) -> tuple[str, str]:
+        """
+        Generates a pair of strings with lengths m and n.
+        :param m: Length of the first string.
+        :param n: Length of the second string.
+        :param similarity: Fraction of characters in the strings that should be identical (0.0 to 1.0).
+        :return: A tuple containing two strings.
+        """
+        # Generate the first string
+        str1 = self.generate(m)
+
+        # Generate the second string based on the similarity
+        common_length = int(similarity * min(m, n))
+        unique_part_length_str2 = n - common_length
+
+        # Create the common part
+        common_part = ''.join(random.choice(self.alphabet) for _ in range(common_length))
+
+        # Create the unique parts
+        unique_part_str1 = str1[common_length:] if m > common_length else ''
+        unique_part_str2 = ''.join(random.choice(self.alphabet) for _ in range(unique_part_length_str2))
+
+        # Construct the strings
+        str1 = common_part + unique_part_str1
+        str2 = common_part + unique_part_str2
+
+        return str1, str2
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
