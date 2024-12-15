@@ -56,6 +56,37 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
+
+#TODO:add the string geneation logic
+class StringGenerator(DataGenerator):
+    def __init__(self,alphabit=['A','B','C']):
+        pass
+    def generate(self, size: int = 1) -> int:
+    
+        if size < 1:
+            raise ValueError("Size must be at least 1.")
+        return ''.join(random.choice(self.alphabet) for _ in range(size))
+
+    def generate_pair(self, m: int, n: int) -> tuple:
+        if m < 1 or n < 1:
+            raise ValueError("String sizes must be at least 1.")
+        return self.generate(m), self.generate(n)
+
+    def generate_almost_identical(self, size: int) -> tuple:
+        if size < 1:
+            raise ValueError("Size must be at least 1.")
+        original = self.generate(size)
+        mutated = list(original)
+        mutation_index = random.randint(0, size - 1)
+        mutated[mutation_index] = random.choice([char for char in self.alphabet if char != original[mutation_index]])
+        return original, ''.join(mutated)
+
+    def generate_completely_different(self, original: str) -> str:
+        if not original:
+            raise ValueError("Original string must not be empty.")
+        return ''.join(random.choice([char for char in self.alphabet if char != ch]) for ch in original)
+
+
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
