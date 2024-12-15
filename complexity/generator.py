@@ -7,15 +7,18 @@ import numpy as np
 
 import networkx as nx
 
+
 class DataGenerator(ABC):
     @abstractmethod
     def generate(self, size: int) -> Any:
         """Generate synthetic data of the given size."""
         pass
 
+
 class LinearDataGenerator(DataGenerator):
     def generate(self, size: int) -> list[int]:
         return list(range(1, size + 1))
+
 
 class RandomDataGenerator(DataGenerator):
     def __init__(self, low: int = 0, high: int = 100):
@@ -25,6 +28,7 @@ class RandomDataGenerator(DataGenerator):
     def generate(self, size: int) -> list[int]:
         return [random.randint(self.low, self.high) for _ in range(size)]
 
+
 class GaussianDataGenerator(DataGenerator):
     def __init__(self, mean: float = 0, std: float = 1):
         self.mean = mean
@@ -32,6 +36,7 @@ class GaussianDataGenerator(DataGenerator):
 
     def generate(self, size: int) -> np.ndarray:
         return np.random.normal(self.mean, self.std, size)
+
 
 class DataGeneratorFactory:
     def __init__(self):
@@ -45,6 +50,7 @@ class DataGeneratorFactory:
             raise ValueError(f"Generator '{name}' not found.")
         return self.generators[name]
 
+
 class NumberGenerator(DataGenerator):
     def __init__(self, low: int = 0, high: int = 100, fixed: int = None):
         self.low = low
@@ -57,12 +63,28 @@ class NumberGenerator(DataGenerator):
         return random.randint(self.low, self.high)
 
 
-#TODO:add the string geneation logic
-class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+# TODO:add the string geneation logic
+
+
+class StringGenerator:
+    def __init__(self, alphabet=None):
+        self.alphabet = alphabet or ["A", "B", "C", "D"]
+
+    def generate(self, size):
+        """Generate a random string of given size."""
+        return "".join(random.choices(self.alphabet, k=size))
+
+    def generate_pair(self, size1, size2, similarity=0):
+        """
+        Generate a pair of strings with optional similarity.
+        `similarity` is a percentage (0 to 100) of shared characters.
+        """
+        common_chars = int(min(size1, size2) * similarity / 100)
+        shared = "".join(random.choices(self.alphabet, k=common_chars))
+        unique1 = "".join(random.choices(self.alphabet, k=size1 - common_chars))
+        unique2 = "".join(random.choices(self.alphabet, k=size2 - common_chars))
+        return shared + unique1, shared + unique2
+
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
@@ -86,7 +108,6 @@ class GraphGenerator(DataGenerator):
         return graph
 
 
-
 def main():
     # Factory setup
     factory = DataGeneratorFactory()
@@ -106,6 +127,6 @@ def main():
     print("Generated Graph:")
     print(graph.edges(data=True))  # Print edges with weights
 
+
 if __name__ == "__main__":
     main()
-
