@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import numpy as np
 
+
 class ComplexityFunction(ABC):
     @abstractmethod
     def evaluate(self, x: np.ndarray) -> np.ndarray:
@@ -12,12 +13,14 @@ class ComplexityFunction(ABC):
         """Return the name of the complexity function."""
         pass
 
+
 class ZeroComplexity(ComplexityFunction):
     def evaluate(self, x: np.ndarray) -> np.ndarray:
         return np.zeros(x.shape)
 
     def name(self) -> str:
         return "O(0)"
+
 
 class ConstantComplexity(ComplexityFunction):
     def evaluate(self, x: np.ndarray) -> np.ndarray:
@@ -37,7 +40,7 @@ class LinearComplexity(ComplexityFunction):
 
 class QuadraticComplexity(ComplexityFunction):
     def evaluate(self, x: np.ndarray) -> np.ndarray:
-        return x ** 2
+        return x**2
 
     def name(self) -> str:
         return "O(n^2)"
@@ -45,7 +48,7 @@ class QuadraticComplexity(ComplexityFunction):
 
 class CubicComplexity(ComplexityFunction):
     def evaluate(self, x: np.ndarray) -> np.ndarray:
-        return x ** 3
+        return x**3
 
     def name(self) -> str:
         return "O(n^3)"
@@ -66,9 +69,12 @@ class LinearLogComplexity(ComplexityFunction):
     def name(self) -> str:
         return "O(n log n)"
 
+
 class LeastSquaresCalculator:
     @staticmethod
-    def calculate(x: np.ndarray, y: np.ndarray, complexity_func: ComplexityFunction) -> float:
+    def calculate(
+        x: np.ndarray, y: np.ndarray, complexity_func: ComplexityFunction
+    ) -> float:
         sigma_gn_squared = complexity_func.evaluate(x) ** 2
         sigma_gn_y = complexity_func.evaluate(x) * y
         coef = sigma_gn_y.sum() / sigma_gn_squared.sum()

@@ -10,19 +10,16 @@ sys.path.append(str(Path(__file__).parent.parent))
 from complexity.generator import (
     DataGeneratorFactory,
     RandomDataGenerator,
-    LinearDataGenerator
+    LinearDataGenerator,
 )
 from complexity.profiler import TimeAndSpaceProfiler
 from complexity.analyser import ComplexityAnalyzer
-from complexity.visualizer import (
-    ComplexityVisualizer,
-    ComplexityDashboardVisualizer
-)
+from complexity.visualizer import ComplexityVisualizer, ComplexityDashboardVisualizer
 
 from collections import namedtuple
 
 # Define metrics namedtuple
-Metrics = namedtuple('Metrics', ['n', 'comparison_count'])
+Metrics = namedtuple("Metrics", ["n", "comparison_count"])
 
 # Set up data generators
 factory = DataGeneratorFactory()
@@ -40,26 +37,31 @@ random_arrays = [
 ]
 
 sorted_arrays = [
-    [sorted(factory.get_generator("random").generate(size)) for _ in range(nbr_experiments)]
+    [
+        sorted(factory.get_generator("random").generate(size))
+        for _ in range(nbr_experiments)
+    ]
     for size in lengths
 ]
+
 
 # Search algorithms implementation
 def sequential_search(arr, target):
     comparisons = 0
     n = len(arr)
-    
+
     for i in range(n):
         comparisons += 1
         if arr[i] == target:
             break
-    
+
     return Metrics(n, comparisons)
+
 
 def advanced_sequential_search(arr, target):
     comparisons = 0
     n = len(arr)
-    
+
     for i in range(n):
         comparisons += 1
         if arr[i] == target:
@@ -68,19 +70,20 @@ def advanced_sequential_search(arr, target):
         comparisons += 1
         if arr[i] > target:
             break
-    
+
     return Metrics(n, comparisons)
+
 
 def binary_search(arr, target):
     comparisons = 0
     n = len(arr)
     start = 0
     end = n - 1
-    
+
     while start <= end:
         mid = (start + end) // 2
         comparisons += 1
-        
+
         if arr[mid] == target:
             break
         elif arr[mid] < target:
@@ -88,15 +91,12 @@ def binary_search(arr, target):
         else:
             end = mid - 1
         comparisons += 1
-    
+
     return Metrics(n, comparisons)
 
+
 # Algorithms to benchmark
-search_algorithms = [
-    sequential_search,
-    advanced_sequential_search,
-    binary_search
-]
+search_algorithms = [sequential_search, advanced_sequential_search, binary_search]
 
 # Initialize profiler
 profiler = TimeAndSpaceProfiler()
@@ -114,37 +114,41 @@ with tqdm(total=total_experiments, desc="Running experiments") as pbar:
             # Get arrays for this experiment
             random_arr = random_arrays[length_idx][exp]
             sorted_arr = sorted_arrays[length_idx][exp]
-            
+
             # Generate random target (existing in array)
             random_target = random_arr[np.random.randint(0, length)]
             sorted_target = sorted_arr[np.random.randint(0, length)]
-            
+
             # Test each algorithm
             for algo in search_algorithms:
                 algo_name = algo.__name__
-                
+
                 # For sequential and advanced sequential, test with both random and sorted
                 if algo == sequential_search:
                     metrics = profiler.profile(algo, random_arr, random_target)
-                    results.append({
-                        'algorithm': algo_name,
-                        'data_type': 'random',
-                        'size': length,
-                        'experiment': exp,
-                        **metrics
-                    })
+                    results.append(
+                        {
+                            "algorithm": algo_name,
+                            "data_type": "random",
+                            "size": length,
+                            "experiment": exp,
+                            **metrics,
+                        }
+                    )
                     pbar.update(1)
-                
+
                 # For advanced sequential and binary search, test with sorted array
                 if algo in [advanced_sequential_search, binary_search]:
                     metrics = profiler.profile(algo, sorted_arr, sorted_target)
-                    results.append({
-                        'algorithm': algo_name,
-                        'data_type': 'sorted',
-                        'size': length,
-                        'experiment': exp,
-                        **metrics
-                    })
+                    results.append(
+                        {
+                            "algorithm": algo_name,
+                            "data_type": "sorted",
+                            "size": length,
+                            "experiment": exp,
+                            **metrics,
+                        }
+                    )
                     pbar.update(1)
 
 print("\nSaving results...")
@@ -153,21 +157,23 @@ print("\nSaving results...")
 df = pd.DataFrame(results)
 
 # Save results
-df.to_csv('search_results.csv', index=False)
+df.to_csv("search_results.csv", index=False)
 
 # Data Preprocessing: Convert time and memory columns to numeric
-df['time'] = pd.to_numeric(df['time'], errors='coerce')
-df['memory'] = pd.to_numeric(df['memory'], errors='coerce')
+df["time"] = pd.to_numeric(df["time"], errors="coerce")
+df["memory"] = pd.to_numeric(df["memory"], errors="coerce")
 
 # Grouping by algorithm, data_type, and size
-grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
-    'time': 'mean',
-    'memory': 'mean',
-    'comparison_count': 'mean'
-}).reset_index()
+grouped = (
+    df.groupby(["algorithm", "data_type", "size"])
+    .agg({"time": "mean", "memory": "mean", "comparison_count": "mean"})
+    .reset_index()
+)
 
 # Save both raw and grouped results for later analysis
-df.to_csv('search_results_raw.csv', index=False)
-grouped.to_csv('search_results_grouped.csv', index=False)
+df.to_csv("search_results_raw.csv", index=False)
+grouped.to_csv("search_results_grouped.csv", index=False)
 
-print("\nResults have been saved to 'search_results_raw.csv' and 'search_results_grouped.csv'")
+print(
+    "\nResults have been saved to 'search_results_raw.csv' and 'search_results_grouped.csv'"
+)

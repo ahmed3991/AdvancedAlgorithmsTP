@@ -1,0 +1,12 @@
+The best-fitting complexity function is: O(n^2)
+Raw Data:
+Algorithm  String Size  LCS Result  Time (s)  Memory (MB)
+       DP           10           5  0.207013     0.000000
+       DP           20          14  0.211825     0.003906
+       DP           50          29  0.205060     0.015625
+       DP          100          63  0.211278     0.078125
+       DP          200         130  0.237516     0.265625
+       DP          500         320  0.443849     1.847656
+       DP         1000         646  0.817445     3.066406
+       DP         2000        1309  2.657629     1.992188
+       DP         5000        3254 19.753360    12.808594
