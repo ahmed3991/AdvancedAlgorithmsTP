@@ -4,3 +4,4 @@ matplotlib
 numpy
 memory-profiler
 seaborn
+networkx

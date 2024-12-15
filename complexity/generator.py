@@ -58,11 +58,14 @@ class NumberGenerator(DataGenerator):
 
 
 #TODO:add the string geneation logic
-class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+class StringGenerator:
+    def __init__(self, alphabet=['A','B','C']):
+        self.alphabet = alphabet
+
+    def generate(self, size: int = 1) -> str:
+        if size <= 0:
+            raise ValueError("Size must be a positive integer.")
+        return ''.join(random.choices(self.alphabet, k=size))
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
@@ -105,7 +108,3 @@ def main():
     graph = graph_generator.generate(5)
     print("Generated Graph:")
     print(graph.edges(data=True))  # Print edges with weights
-
-if __name__ == "__main__":
-    main()
-
