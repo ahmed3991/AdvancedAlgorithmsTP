@@ -27,6 +27,7 @@ factory = DataGeneratorFactory()
 factory.register_generator("random", RandomDataGenerator(0, 100))
 factory.register_generator("sorted", LinearDataGenerator())
 
+
 # Data generation
 #lengths = [10, 100, 1000, 10000]
 lengths = [10, 100, 1000]
