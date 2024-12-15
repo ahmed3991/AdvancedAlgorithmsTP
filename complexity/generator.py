@@ -59,10 +59,22 @@ class NumberGenerator(DataGenerator):
 
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+    def init(self, alphabet=None, string_length: int = 5):
+        # إذا لم يتم توفير أبجدية، استخدم الافتراضية
+        self.alphabet = alphabet if alphabet else ['A', 'B', 'C']
+        self.string_length = string_length
+
+    def generate(self, size: int = 1) -> str:
+       
+        from random import choices  
+        return ''.join(choices(self.alphabet, k=size))
+
+    def generate_pair(self, len1: int, len2: int) -> tuple[str, str]:
+        
+        from random import choices  
+        str1 = ''.join(choices(self.alphabet, k=len1))
+        str2 = ''.join(choices(self.alphabet, k=len2))
+        return str1, str2
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
