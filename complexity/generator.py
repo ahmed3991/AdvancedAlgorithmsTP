@@ -56,6 +56,14 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
+
+#TODO:add the string geneation logic
+class StringGenerator(DataGenerator):
+    def __init__(self,alphabit=['A','B','C']):
+        pass
+    def generate(self, size: int = 1) -> int:
+        pass
+
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
