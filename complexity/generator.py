@@ -60,10 +60,11 @@ class NumberGenerator(DataGenerator):
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
     def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+        self.alphabit = alphabit
 
+    def generate(self, size: int = 1) -> int:
+        strings = ["".join(random.choices(self.alphabit, k=5)) for _ in range(size)]
+        return len(strings)
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
