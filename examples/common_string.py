@@ -27,16 +27,20 @@ lengths = [10, 100, 1000]
 nbr_experiments=3
 
 random_pairs = [
-    factory.get_generator("string").generate_pair(size,size) for size in lengths for _ in range(nbr_experiments) 
+    [factory.get_generator("string").generate_pair(size, size) for _ in range(nbr_experiments)]
+    for size in lengths
 ]
 
 different_pairs = [
-    factory.get_generator("string").generate_diff_pair(size,size) for size in lengths for _ in range(nbr_experiments)
+    [factory.get_generator("string").generate_diff_pair(size, size) for _ in range(nbr_experiments)]
+    for size in lengths
 ]
 
 identical_pairs = [
-    factory.get_generator("string").generate_ident_pair(size) for size in lengths for _ in range(nbr_experiments)
+    [factory.get_generator("string").generate_ident_pair(size) for _ in range(nbr_experiments)]
+    for size in lengths
 ]
+
 
 
 
@@ -96,45 +100,64 @@ def lcs_dp(x,y):
 
     return dp[n][m]
 
+    # Benchmark helper functions
+
+BenchmarkResult = namedtuple("BenchmarkResult", ["result", "metadata"])
+
+def benchmark_lcs_rec(x, y):
+    result = lcs_rec(x, y, len(x), len(y))
+    return BenchmarkResult(result=result, metadata={})
+
+def benchmark_lcs_rec_memo(x, y):
+    result = lcs_rec_memo(x, y, len(x), len(y), {})
+    return BenchmarkResult(result=result, metadata={})
+
+def benchmark_lcs_dp(x, y):
+    result = lcs_dp(x, y)
+    return BenchmarkResult(result=result, metadata={})
+
+
 
 ## Benchmarking
 
 funcs = [
-    lcs_rec,
-    lcs_rec_memo,
+    benchmark_lcs_rec,
+    benchmark_lcs_rec_memo,
     lcs_dp
 ]
 
 profiler = TimeAndSpaceProfiler()
 results = []
 
-total_iterations = len(funcs) * len(lengths) * nbr_experiments * 3  # 3 for random, sorted, inverse_sorted
+total_iterations = len(funcs) * len(lengths) * nbr_experiments * 3  # 3 data types: random, identical, different
 with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pbar:
 
     for func in funcs:
-        for size, random_experiments, identical_experiments, diffirent_experiments in zip(
-            lengths,random_pairs,identical_experiments,different_pairs
+        for size, random_experiments, identical_experiments, different_experiments in zip(
+            lengths, random_pairs, identical_pairs, different_pairs
         ):
             for experiment_idx in range(nbr_experiments):
-                for x,y in [
+                for data, label in [
                     (random_experiments[experiment_idx], "random"),
                     (identical_experiments[experiment_idx], "identical"),
-                    (diffirent_experiments[experiment_idx], "different"),
+                    (different_experiments[experiment_idx], "different"),
                 ]:
-                    logs = profiler.profile(func,x,y)
+                    x, y = data  # Unpack the pair
+                    logs = profiler.profile(func, x, y)
+                    if isinstance(logs, BenchmarkResult):
+                        logs = logs.metadata  # Use metadata for profiling, discard the result for now
                     logs.update({
                         "algorithm": func.__name__,
-                        "first_string": x,
-                        "second_string": y,
+                        "data_type": label,
                         "size": size,
                         "experiment": experiment_idx + 1,
                     })
-                    results.append(logs)
+                    results.append(logs)    
 
+                    pbar.update(1)
                     pbar.set_postfix({
                         "algorithm": func.__name__,
-                        "first_string": x,
-                        "second_string": y,
+                        "data_type": label,
                         "size": size,
                         "experiment": experiment_idx + 1,
                     })
@@ -151,7 +174,7 @@ grouped = df.groupby(['algorithm', 'first_string', 'second_string', 'size']).agg
     'memory': 'mean',
 }).reset_index()
 
-df.to_csv('sort_results_raw.csv', index=False)
-grouped.to_csv('sort_results_grouped.csv', index=False)
+df.to_csv('raw_results.csv', index=False)
+grouped.to_csv('grouped_results.csv', index=False)
 
-print("\nResults have been saved to 'sort_results_raw.csv' and 'sort_results_grouped.csv'")
+print("\nResults have been saved to 'raw_results.csv' and 'grouped_results.csv'")
