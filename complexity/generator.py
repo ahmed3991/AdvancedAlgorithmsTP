@@ -1,22 +1,22 @@
 from abc import ABC, abstractmethod
 from typing import Any
-
 import random
 import numpy as np
-
-
 import networkx as nx
 
+# Abstract Base Class for Data Generators
 class DataGenerator(ABC):
     @abstractmethod
     def generate(self, size: int) -> Any:
         """Generate synthetic data of the given size."""
         pass
 
+# Linear Data Generator
 class LinearDataGenerator(DataGenerator):
     def generate(self, size: int) -> list[int]:
         return list(range(1, size + 1))
 
+# Random Data Generator
 class RandomDataGenerator(DataGenerator):
     def __init__(self, low: int = 0, high: int = 100):
         self.low = low
@@ -25,6 +25,7 @@ class RandomDataGenerator(DataGenerator):
     def generate(self, size: int) -> list[int]:
         return [random.randint(self.low, self.high) for _ in range(size)]
 
+# Gaussian Data Generator
 class GaussianDataGenerator(DataGenerator):
     def __init__(self, mean: float = 0, std: float = 1):
         self.mean = mean
@@ -33,6 +34,7 @@ class GaussianDataGenerator(DataGenerator):
     def generate(self, size: int) -> np.ndarray:
         return np.random.normal(self.mean, self.std, size)
 
+# Factory for Data Generators
 class DataGeneratorFactory:
     def __init__(self):
         self.generators = {}
@@ -45,6 +47,7 @@ class DataGeneratorFactory:
             raise ValueError(f"Generator '{name}' not found.")
         return self.generators[name]
 
+# Number Generator
 class NumberGenerator(DataGenerator):
     def __init__(self, low: int = 0, high: int = 100, fixed: int = None):
         self.low = low
@@ -56,14 +59,15 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
-
-#TODO:add the string geneation logic
+# String Generator
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+    def __init__(self, alphabet=['A', 'B', 'C']):
+        self.alphabet = alphabet
 
+    def generate(self, size: int = 1) -> str:
+        return ''.join(random.choices(self.alphabet, k=size))
+
+# Graph Generator
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
@@ -85,8 +89,7 @@ class GraphGenerator(DataGenerator):
 
         return graph
 
-
-
+# Main function for testing
 def main():
     # Factory setup
     factory = DataGeneratorFactory()
@@ -95,6 +98,7 @@ def main():
     factory.register_generator("gaussian", GaussianDataGenerator(0, 1))
     factory.register_generator("number", NumberGenerator(1, 100))
     factory.register_generator("graph", GraphGenerator(directed=True, weighted=True))
+    factory.register_generator("string", StringGenerator(['A', 'C', 'G', 'T']))
 
     # Generate a number
     number_generator = factory.get_generator("number")
@@ -106,6 +110,10 @@ def main():
     print("Generated Graph:")
     print(graph.edges(data=True))  # Print edges with weights
 
+    # Generate a string
+    string_generator = factory.get_generator("string")
+    random_string = string_generator.generate(10)
+    print(f"Generated String: {random_string}")
+
 if __name__ == "__main__":
     main()
-
