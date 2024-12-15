@@ -59,7 +59,7 @@ class NumberGenerator(DataGenerator):
 
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
+    def __init__(self,alphabit=['A', 'C', 'G', 'T']):
         self.alphabit = alphabit
 
     def generate(self, size: int = 1) -> str:
