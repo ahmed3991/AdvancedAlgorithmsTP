@@ -58,11 +58,40 @@ class NumberGenerator(DataGenerator):
 
 
 #TODO:add the string geneation logic
-class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+import random
+
+class StringGenerator:
+    def __init__(self, alphabit=None):
+        self.alphabit = alphabit if alphabit else ['A', 'B', 'C']
+    
+    def generate(self, size: int = 1) -> str:
+        return ''.join(random.choice(self.alphabit) for _ in range(size))
+    
+    def generate_pair(self, m: int, n: int) -> tuple:
+        str_m = self.generate(m)
+        str_n = self.generate(n)
+        return str_m, str_n
+    
+    def generate_similar_pair(self, m: int, n: int, similarity: float = 0.5) -> tuple:
+        str_m = self.generate(m)
+        str_n = list(self.generate(n))
+        
+        num_similar_chars = int(min(m, n) * similarity)
+        for i in range(num_similar_chars):
+            str_n[i] = str_m[i % m]  
+        
+        return str_m, ''.join(str_n)
+    
+    def generate_different_pair(self, m: int, n: int, difference: float = 0.5) -> tuple:
+        str_m = self.generate(m)
+        str_n = list(self.generate(n))
+        
+        num_different_chars = int(min(m, n) * difference)
+        for i in range(num_different_chars):
+            str_n[i] = random.choice(self.alphabit)  
+        
+        return str_m, ''.join(str_n)
+
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
@@ -109,3 +138,11 @@ def main():
 if __name__ == "__main__":
     main()
 
+# Create generator with DNA alphabet
+gen = StringGenerator(['A', 'C', 'G', 'T'])
+
+# Generate single string
+dna_string = gen.generate(10)  # e.g., "ACGTACGTAC"
+
+# Generate pair of strings
+str1, str2 = gen.generate_pair(5, 8)  # Different lengths
