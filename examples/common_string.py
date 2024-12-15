@@ -23,7 +23,7 @@ from complexity import (
 factory = DataGeneratorFactory()
 factory.register_generator("string",StringGenerator(['A','B','C','D','E']))
 
-lengths = [10, 100, 1000]
+lengths = [3, 5 , 10]
 nbr_experiments=3
 
 random_pairs = [
@@ -146,13 +146,15 @@ with tqdm(total=total_iterations, desc="Benchmarking", unit="experiment") as pba
                     logs = profiler.profile(func, x, y)
                     if isinstance(logs, BenchmarkResult):
                         logs = logs.metadata  # Use metadata for profiling, discard the result for now
+                    logs = profiler.profile(func, x, y)
                     logs.update({
                         "algorithm": func.__name__,
                         "data_type": label,
                         "size": size,
                         "experiment": experiment_idx + 1,
                     })
-                    results.append(logs)    
+                    results.append(logs)
+   
 
                     pbar.update(1)
                     pbar.set_postfix({
@@ -169,7 +171,7 @@ df.to_csv(csv_filename, index=False)
 df['time'] = pd.to_numeric(df['time'], errors='coerce')
 df['memory'] = pd.to_numeric(df['memory'], errors='coerce')
 
-grouped = df.groupby(['algorithm', 'first_string', 'second_string', 'size']).agg({
+grouped = df.groupby(['algorithm', 'data_type', 'size']).agg({
     'time': 'mean',
     'memory': 'mean',
 }).reset_index()

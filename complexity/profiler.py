@@ -13,17 +13,19 @@ class TimeAndSpaceProfiler(Profiler):
         start_time = time.time()
         mem_before = memory_usage()[0]
 
+        # Call the function being profiled
         result = func(*args, **kwargs)
 
         mem_after = memory_usage()[0]
         end_time = time.time()
 
+        # Create logs dictionary with profiling data
         logs = {
             "function": func.__name__,
             "time": end_time - start_time,
             "memory": mem_after - mem_before,
+            "result": result,  # Optionally log the result (remove if unnecessary)
         }
-        
-        logs.update(result._asdict())
 
         return logs
+
