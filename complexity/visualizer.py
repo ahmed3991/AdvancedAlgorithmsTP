@@ -31,7 +31,6 @@ class ComplexityVisualizer:
 
         # Highlight the best-fitting function
         best_function = next(f for f in self.complexity_functions if f.name() == best_fit_function)
-        plt.plot(self.x, best_function.evaluate(self.x), color="red", label=f"Best fit: {best_fit_function}", linewidth=2)
 
         # Customize the chart
         plt.title(title, fontsize=16)
