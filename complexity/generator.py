@@ -109,3 +109,45 @@ def main():
 if __name__ == "__main__":
     main()
 
+
+class StringGenerator:
+    def __init__(self, alphabet=['A', 'B', 'C']):
+        """
+        Initializes the StringGenerator with a given alphabet.
+        :param alphabet: List of characters to use for generating strings.
+        """
+        self.alphabet = alphabet
+
+    def generate(self, size=1):
+        """
+        Generates a random string of a given size using the alphabet.
+        :param size: Length of the generated string.
+        :return: Random string.
+        """
+        return ''.join(random.choices(self.alphabet, k=size))
+
+    def generate_pair(self, m, n, similarity=0.5):
+        """
+        Generates a pair of strings with specified lengths and similarity.
+        :param m: Length of the first string.
+        :param n: Length of the second string.
+        :param similarity: Proportion of shared characters (0 to 1).
+        :return: Tuple of two strings.
+        """
+        # Generate a base string to introduce similarity
+        base = self.generate(min(m, n))
+        
+        # Mutate the base string to generate the first string
+        str1 = ''.join(
+            random.choice(self.alphabet) if random.random() > similarity else char
+            for char in base
+        )
+        
+        # Mutate the base string to generate the second string
+        str2 = ''.join(
+            random.choice(self.alphabet) if random.random() > similarity else char
+            for char in base
+        )
+
+        # Ensure lengths of the generated strings
+        return str1[:m], str2[:n]
