@@ -1,21 +1,22 @@
 import sys
 import os
 
-print('Please use the complexity library')
-# Fix sys.path to include the parent directory
+# Make sure to add the correct path to sys.path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.abspath(os.path.join(current_dir, ".."))
 sys.path.insert(0, parent_dir)
 
+
+
 import random
 import numpy as np
-from complexity.profiler import TimeAndSpaceProfiler
+from memory_profiler import memory_usage
 from complexity.analyser import ComplexityAnalyzer, LinearComplexity, QuadraticComplexity
 from complexity.visualizer import ComplexityVisualizer
 from complexity.generator import StringGenerator
+import time
 
 # Longest Common Subsequence Implementations
-
 def lcs_recursive(X, Y):
     if not X or not Y:
         return 0
@@ -23,19 +24,6 @@ def lcs_recursive(X, Y):
         return 1 + lcs_recursive(X[:-1], Y[:-1])
     else:
         return max(lcs_recursive(X[:-1], Y), lcs_recursive(X, Y[:-1]))
-
-
-def lcs_memoization(X, Y, memo):
-    if (len(X), len(Y)) in memo:
-        return memo[(len(X), len(Y))]
-    if not X or not Y:
-        return 0
-    elif X[-1] == Y[-1]:
-        memo[(len(X), len(Y))] = 1 + lcs_memoization(X[:-1], Y[:-1], memo)
-    else:
-        memo[(len(X), len(Y))] = max(lcs_memoization(X[:-1], Y, memo), lcs_memoization(X, Y[:-1], memo))
-    return memo[(len(X), len(Y))]
-
 
 def lcs_dynamic(X, Y):
     m, n = len(X), len(Y)
@@ -60,6 +48,34 @@ class StringGenerator:
 
     def generate_pair(self, size1: int, size2: int):
         return self.generate(size1), self.generate(size2)
+
+# Profiler Class
+class Profiler:
+    def profile(self, func, *args, **kwargs):
+        pass
+
+class TimeAndSpaceProfiler(Profiler):
+    def profile(self, func, *args, **kwargs):
+        start_time = time.time()
+        mem_before = memory_usage()[0]
+
+        result = func(*args, **kwargs)
+
+        mem_after = memory_usage()[0]
+        end_time = time.time()
+
+        logs = {
+            "function": func.__name__,
+            "time": end_time - start_time,
+            "memory": mem_after - mem_before,
+        }
+
+        if hasattr(result, '_asdict'):
+            logs.update(result._asdict())
+        else:
+            logs["result"] = result
+
+        return logs
 
 # Profiling and Visualization
 if __name__ == "__main__":

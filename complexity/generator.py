@@ -56,8 +56,6 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
-
-
 class StringGenerator(DataGenerator):
     def __init__(self, alphabet: list[str] = None):
         self.alphabet = alphabet if alphabet else ['A', 'B', 'C']
