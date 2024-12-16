@@ -1,111 +1,120 @@
 from abc import ABC, abstractmethod
-from typing import Any
-
+from typing import Any, List, Tuple
 import random
 import numpy as np
-
-
 import networkx as nx
 
-class DataGenerator(ABC):
+# Abstract Base Class for Data Generators
+class SyntheticDataGenerator(ABC):
     @abstractmethod
-    def generate(self, size: int) -> Any:
-        """Generate synthetic data of the given size."""
+    def create(self, size: int) -> Any:
+        """Create synthetic data of a specified size."""
         pass
 
-class LinearDataGenerator(DataGenerator):
-    def generate(self, size: int) -> list[int]:
-        return list(range(1, size + 1))
+# Linear Data Generator
+class SequentialData(SyntheticDataGenerator):
+    def create(self, size: int) -> List[int]:
+        return [i for i in range(1, size + 1)]
 
-class RandomDataGenerator(DataGenerator):
-    def __init__(self, low: int = 0, high: int = 100):
-        self.low = low
-        self.high = high
+# Random Number Generator
+class UniformRandomData(SyntheticDataGenerator):
+    def __init__(self, min_val: int = 0, max_val: int = 100):
+        self.min_val = min_val
+        self.max_val = max_val
 
-    def generate(self, size: int) -> list[int]:
-        return [random.randint(self.low, self.high) for _ in range(size)]
+    def create(self, size: int) -> List[int]:
+        return [random.randint(self.min_val, self.max_val) for _ in range(size)]
 
-class GaussianDataGenerator(DataGenerator):
-    def __init__(self, mean: float = 0, std: float = 1):
+# Gaussian Data Generator
+class NormalDistributedData(SyntheticDataGenerator):
+    def __init__(self, mean: float = 0.0, std_dev: float = 1.0):
         self.mean = mean
-        self.std = std
+        self.std_dev = std_dev
 
-    def generate(self, size: int) -> np.ndarray:
-        return np.random.normal(self.mean, self.std, size)
+    def create(self, size: int) -> np.ndarray:
+        return np.random.normal(self.mean, self.std_dev, size)
 
-class DataGeneratorFactory:
+# Factory for Data Generators
+class GeneratorFactory:
     def __init__(self):
-        self.generators = {}
+        self.registry = {}
 
-    def register_generator(self, name: str, generator: DataGenerator):
-        self.generators[name] = generator
+    def add_generator(self, key: str, generator: SyntheticDataGenerator):
+        self.registry[key] = generator
 
-    def get_generator(self, name: str) -> DataGenerator:
-        if name not in self.generators:
-            raise ValueError(f"Generator '{name}' not found.")
-        return self.generators[name]
+    def get_generator(self, key: str) -> SyntheticDataGenerator:
+        if key not in self.registry:
+            raise ValueError(f"Generator with key '{key}' is not registered.")
+        return self.registry[key]
 
-class NumberGenerator(DataGenerator):
-    def __init__(self, low: int = 0, high: int = 100, fixed: int = None):
-        self.low = low
-        self.high = high
-        self.fixed = fixed
+# String Generator
+class RandomStringGenerator:
+    def __init__(self, charset: List[str] = ['A', 'B', 'C']):
+        self.charset = charset
 
-    def generate(self, size: int = 1) -> int:
-        if self.fixed is not None:
-            return self.fixed
-        return random.randint(self.low, self.high)
+    def create(self, size: int) -> str:
+        return ''.join(random.choice(self.charset) for _ in range(size))
 
+    def create_pair(self, len1: int, len2: int, match_ratio: float = 0.0) -> Tuple[str, str]:
+        if not (0.0 <= match_ratio <= 1.0):
+            raise ValueError("Match ratio must be between 0.0 and 1.0")
 
-#TODO:add the string geneation logic
-class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+        base = [random.choice(self.charset) for _ in range(min(len1, len2))]
+        shared_count = int(len(base) * match_ratio)
+        shared_indices = random.sample(range(len(base)), shared_count)
 
-class GraphGenerator(DataGenerator):
+        for idx in shared_indices:
+            base[idx] = random.choice(self.charset)
+
+        str1 = ''.join(base[:len1]) + ''.join(random.choices(self.charset, k=(len1 - len(base))))
+        str2 = ''.join(base[:len2]) + ''.join(random.choices(self.charset, k=(len2 - len(base))))
+
+        return str1, str2
+
+# Graph Generator
+class RandomGraphGenerator(SyntheticDataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
         self.weighted = weighted
 
-    def generate(self, size: int) -> nx.Graph:
+    def create(self, size: int) -> nx.Graph:
         graph = nx.DiGraph() if self.directed else nx.Graph()
 
-        # Create nodes
-        for i in range(size):
-            graph.add_node(i)
+        for node in range(size):
+            graph.add_node(node)
 
-        # Create edges with random weights
-        for i in range(size):
-            for j in range(i + 1, size):
-                if random.random() < 0.3:  # Sparsity control
+        for node1 in range(size):
+            for node2 in range(node1 + 1, size):
+                if random.random() < 0.3:
                     weight = random.randint(1, 10) if self.weighted else 1
-                    graph.add_edge(i, j, weight=weight)
+                    graph.add_edge(node1, node2, weight=weight)
 
         return graph
 
-
-
 def main():
-    # Factory setup
-    factory = DataGeneratorFactory()
-    factory.register_generator("linear", LinearDataGenerator())
-    factory.register_generator("random", RandomDataGenerator(0, 50))
-    factory.register_generator("gaussian", GaussianDataGenerator(0, 1))
-    factory.register_generator("number", NumberGenerator(1, 100))
-    factory.register_generator("graph", GraphGenerator(directed=True, weighted=True))
+    # Setting up the factory
+    factory = GeneratorFactory()
+    factory.add_generator("linear", SequentialData())
+    factory.add_generator("random", UniformRandomData(0, 50))
+    factory.add_generator("gaussian", NormalDistributedData(0, 1))
+    factory.add_generator("graph", RandomGraphGenerator(directed=True, weighted=True))
 
-    # Generate a number
-    number_generator = factory.get_generator("number")
-    print(f"Generated Number: {number_generator.generate()}")
+    # Generate linear data
+    linear_gen = factory.get_generator("linear")
+    print("Linear Data:", linear_gen.create(10))
 
-    # Generate a graph
-    graph_generator = factory.get_generator("graph")
-    graph = graph_generator.generate(5)
-    print("Generated Graph:")
-    print(graph.edges(data=True))  # Print edges with weights
+    # Generate random data
+    random_gen = factory.get_generator("random")
+    print("Random Data:", random_gen.create(10))
+
+    # Generate Gaussian data
+    gaussian_gen = factory.get_generator("gaussian")
+    print("Gaussian Data:", gaussian_gen.create(10))
+
+    # Generate graph
+    graph_gen = factory.get_generator("graph")
+    graph = graph_gen.create(5)
+    print("Graph Edges:", graph.edges(data=True))
 
 if __name__ == "__main__":
     main()
-
