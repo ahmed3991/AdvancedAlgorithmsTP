@@ -18,7 +18,7 @@ from complexity import (
     ComplexityDashboardVisualizer
 )
 
-# Define Metrics named tuple to store  time and memory
+# Define Metrics named tuple to store only time and memory
 Metrics = namedtuple("Metrics", ["n", "time", "memory"])
 
 # Setup Data Generator

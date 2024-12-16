@@ -59,7 +59,7 @@ class NumberGenerator(DataGenerator):
 
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self, alphabet=['A', 'B', 'C']):
+    def __init__(self, alphabet=['A','B','C']):
         """
         Initialize the generator with a list of characters (alphabet).
         """
