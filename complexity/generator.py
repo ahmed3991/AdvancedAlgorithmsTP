@@ -4,7 +4,6 @@ from typing import Any
 import random
 import numpy as np
 
-
 import networkx as nx
 
 class DataGenerator(ABC):
