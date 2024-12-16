@@ -1,10 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
-
 import random
 import numpy as np
-
-
 import networkx as nx
 
 class DataGenerator(ABC):
@@ -56,13 +53,33 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
-
-#TODO:add the string geneation logic
+# StringGenerator implementation
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+    def __init__(self, alphabet=['A', 'B', 'C']):
+        # Initialize with the provided alphabet
+        self.alphabet = alphabet
+
+    def generate(self, size: int = 1) -> str:
+        # Generate a random string of the given size using characters from the alphabet
+        return ''.join(random.choice(self.alphabet) for _ in range(size))
+
+    def generate_pair(self, m: int, n: int) -> tuple:
+        # Generate two random strings of lengths m and n
+        string_m = self.generate(m)
+        string_n = self.generate(n)
+        return (string_m, string_n)
+
+    def generate_almost_identical(self, size: int) -> str:
+        # Generate a string and slightly modify it to create an "almost identical" string
+        original = self.generate(size)
+        mutated = list(original)
+        mutation_index = random.randint(0, size - 1)
+        mutated[mutation_index] = random.choice([char for char in self.alphabet if char != original[mutation_index]])
+        return ''.join(mutated)
+
+    def generate_completely_different(self, size: int) -> str:
+        # Generate a completely different string by changing every character
+        return self.generate(size)
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
@@ -85,8 +102,6 @@ class GraphGenerator(DataGenerator):
 
         return graph
 
-
-
 def main():
     # Factory setup
     factory = DataGeneratorFactory()
@@ -95,6 +110,7 @@ def main():
     factory.register_generator("gaussian", GaussianDataGenerator(0, 1))
     factory.register_generator("number", NumberGenerator(1, 100))
     factory.register_generator("graph", GraphGenerator(directed=True, weighted=True))
+    factory.register_generator("string", StringGenerator())
 
     # Generate a number
     number_generator = factory.get_generator("number")
@@ -106,6 +122,22 @@ def main():
     print("Generated Graph:")
     print(graph.edges(data=True))  # Print edges with weights
 
+    # Generate a string
+    string_generator = factory.get_generator("string")
+    random_string = string_generator.generate(10)
+    print(f"Generated String: {random_string}")
+
+    # Generate pair of strings
+    string_pair = string_generator.generate_pair(5, 8)
+    print(f"Generated Pair of Strings: {string_pair}")
+
+    # Generate almost identical string
+    almost_identical = string_generator.generate_almost_identical(10)
+    print(f"Almost Identical String: {almost_identical}")
+
+    # Generate completely different string
+    different_string = string_generator.generate_completely_different(10)
+    print(f"Completely Different String: {different_string}")
+
 if __name__ == "__main__":
     main()
-
