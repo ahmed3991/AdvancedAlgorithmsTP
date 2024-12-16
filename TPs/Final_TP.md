@@ -1,4 +1,4 @@
-# Practical Work: Longest Common Subsequence (LCS)
+ # Practical Work: Longest Common Subsequence (LCS)
 
 ## Objectives
 

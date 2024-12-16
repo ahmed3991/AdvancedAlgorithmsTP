@@ -63,6 +63,25 @@ class StringGenerator(DataGenerator):
         pass
     def generate(self, size: int = 1) -> int:
         pass
+    def __init__(self, alphabet: list[str] = None):
+        self.alphabet = alphabet if alphabet else ['A', 'B', 'C']
+
+    def generate(self, size: int = 1) -> str:
+        """Generate a random string of the given size using the specified alphabet."""
+        return ''.join(random.choices(self.alphabet, k=size))
+
+    def generate_pair(self, len1: int, len2: int, similar: bool = False) -> tuple[str, str]:
+        """Generate a pair of strings, optionally making them similar."""
+        str1 = self.generate(len1)
+        if similar:
+            str2 = list(str1)  # Create a copy of str1
+            for _ in range(random.randint(1, len1 // 3)):
+                idx = random.randint(0, len(str2) - 1)
+                str2[idx] = random.choice(self.alphabet)  # Modify a character
+            return str1, ''.join(str2)
+        else:
+            return str1, self.generate(len2)
+
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
