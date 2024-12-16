@@ -1,4 +1,20 @@
-from abc import ABC, abstractmethod
+   "time": end_time - start_time,
+            "memory": mem_after - mem_before,
+        }
+
+        logs.update(result._asdict())
+
+        # Handle results of different types
+        if hasattr(result, '_asdict'):  # Check if result is a namedtuple
+            logs.update(result._asdict())
+        elif isinstance(result, dict):  # If result is a dictionary
+            logs.update(result)
+        elif isinstance(result, (list, tuple)):  # If result is list or tuple
+            logs['result'] = result
+        else:  # Fallback for other types
+            logs['result'] = str(result)
+
+        return logsfrom abc import ABC, abstractmethod
 from memory_profiler import memory_usage
 import time
 
