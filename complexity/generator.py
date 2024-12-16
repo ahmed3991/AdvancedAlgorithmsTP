@@ -59,10 +59,42 @@ class NumberGenerator(DataGenerator):
 
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+    def __init__(self,alphabet=['A','B','C']): # it's alphabet not alphabit hhhh
+        """Init the generator class with a list of characters"""
+        self.alphabet = alphabet
+        
+    def generate(self, size: int = 1) -> str:
+        """generate random string based on the given size"""
+        return "".join(random.choices(self.alphabet, k=size))
+    
+    def generate_pair(self, m: int, n: int, similarity: float=0.0) -> tuple[str, str]:
+        """generate a pair of strings based on the lengths m and n and similarity"""
+        try:
+            if similarity > 1.0 or similarity < 0.0:
+                raise ValueError("Similarity must be between 0.0 and 1.0")
+
+            # generate a string based on the max(m and n)
+            base_string = self.generate(max(m, n))
+            
+            first_str = base_string[:m]
+            
+            last_str = []
+            for i in range(n):
+                if i < m and random.random() < similarity:
+                    # Use the same character as in first string to maintain similarity
+                    last_str.append(first_str[i])
+                else:
+                    # Use 
+                    last_str.append(random.choice(self.alphabet))
+
+            return first_str, "".join(last_str)
+            
+        except ValueError as e:
+            print(f"Error {e}")
+            # return an empty tuple
+            return "", ""
+        
+        
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
