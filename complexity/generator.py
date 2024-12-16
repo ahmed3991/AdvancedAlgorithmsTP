@@ -59,10 +59,29 @@ class NumberGenerator(DataGenerator):
 
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+
+    def __init__(self,alphabet=['A','B','C']):
+        self.alphabet= alphabet
+
+    def generate(self, size: int = 1) -> str:
+        return ''.join(random.choices(self.alphabet, k=size))
+    
+    def generate_pair(self, m: int, n: int) -> tuple:
+        return(self.generate(m), self.generate(n))
+    
+    def generate_diff_pair(self,m: int, n: int) -> tuple:
+
+        if len(self.alphabet) < 2 :
+            raise ValueError("Alphabet must contain 2 or more unique characters")
+        
+        char1,char2=self.alphabet[0],self.alphabet[1]
+        str1=char1*m
+        str2=char2*n
+        return(str1,str2)
+    
+    def generate_ident_pair(self, size: int) -> tuple:
+        str1 = str2 = self.generate(size)
+        return (str1,str2)
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
