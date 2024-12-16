@@ -59,10 +59,45 @@ class NumberGenerator(DataGenerator):
 
 #TODO:add the string geneation logic
 class StringGenerator(DataGenerator):
-    def __init__(self,alphabit=['A','B','C']):
-        pass
-    def generate(self, size: int = 1) -> int:
-        pass
+    def __init__(self, alphabet=['A', 'B', 'C']):
+        """
+        Initialize the generator with a list of characters (alphabet).
+        """
+        self.alphabet = alphabet
+
+    def generate(self, size: int = 1) -> str:
+        """
+        Generate a random string of the given size using characters from the alphabet.
+        """
+        return ''.join(random.choice(self.alphabet) for _ in range(size))
+
+    def generate_pair(self, size1: int, size2: int) -> tuple:
+        """
+        Generate a pair of strings with given sizes.
+        """
+        return self.generate(size1), self.generate(size2)
+
+    def generate_similar(self, size: int, similarity_ratio: float = 0.8) -> tuple:
+        """
+        Generate a pair of strings where a specified proportion (similarity_ratio)
+        of the characters are identical.
+        """
+        common_size = int(size * similarity_ratio)
+        unique_size = size - common_size
+
+        common_part = ''.join(random.choice(self.alphabet) for _ in range(common_size))
+        unique_part1 = ''.join(random.choice(self.alphabet) for _ in range(unique_size))
+        unique_part2 = ''.join(random.choice(self.alphabet) for _ in range(unique_size))
+
+        string1 = common_part + unique_part1
+        string2 = common_part + unique_part2
+
+        # Shuffle to avoid consistent alignment
+        string1 = ''.join(random.sample(string1, len(string1)))
+        string2 = ''.join(random.sample(string2, len(string2)))
+
+        return string1, string2
+
 
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
