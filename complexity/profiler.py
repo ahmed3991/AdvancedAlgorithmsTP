@@ -24,6 +24,9 @@ class TimeAndSpaceProfiler(Profiler):
             "memory": mem_after - mem_before,
         }
         
-        logs.update(result._asdict())
+        if hasattr(result, "_asdict"):
+            logs.update(result._asdict())
+        else:
+            logs["result"] = result
 
         return logs
