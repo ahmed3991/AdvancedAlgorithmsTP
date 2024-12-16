@@ -56,6 +56,28 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
+
+#TODO:add the string geneation logic
+class StringGenerator(DataGenerator):
+    def __init__(self, alphabet=['A', 'B', 'C']):
+        self.alphabet = alphabet
+
+    def generate(self, size: int = 1) -> str:
+        return ''.join(random.choices(self.alphabet, k=size))
+
+    def generate_pair(self, size1: int, size2: int, similarity=0.5):
+        common_length = int(min(size1, size2) * similarity)
+        common_chars = [random.choice(self.alphabet) for _ in range(common_length)]
+
+        str1 = common_chars + [random.choice(self.alphabet) for _ in range(size1 - common_length)]
+        str2 = common_chars + [random.choice(self.alphabet) for _ in range(size2 - common_length)]
+
+        random.shuffle(str1)
+        random.shuffle(str2)
+
+        return ''.join(str1), ''.join(str2)
+
+
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
