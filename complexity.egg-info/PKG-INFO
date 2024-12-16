@@ -1,0 +1,17 @@
+Metadata-Version: 2.1
+Name: complexity
+Version: 1.0.0
+Summary: Description of your library
+Home-page: https://github.com/your-repo
+Author: Your Name
+Author-email: your.email@example.com
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Requires-Dist: tqdm
+Requires-Dist: pandas
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: memory-profiler
+Requires-Dist: seaborn
