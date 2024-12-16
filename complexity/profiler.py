@@ -23,7 +23,10 @@ class TimeAndSpaceProfiler(Profiler):
             "time": end_time - start_time,
             "memory": mem_after - mem_before,
         }
-        
-        logs.update(result._asdict())
+
+        if hasattr(result, "_asdict"):
+            logs.update(result._asdict())
+        else:
+            logs["result"] = result
 
         return logs
