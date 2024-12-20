@@ -56,6 +56,41 @@ class NumberGenerator(DataGenerator):
             return self.fixed
         return random.randint(self.low, self.high)
 
+
+#TODO:add the string geneation logic
+class StringGenerator:
+    def __init__(self, alphabet=None):
+        """
+        Initialize with a list of characters (alphabet).
+        Default is A, B, C.
+        """
+        if alphabet is None:
+            alphabet = ['A', 'B', 'C']
+        self.alphabet = alphabet
+
+    def generate(self, size=1):
+        """
+        Generate a random string of a given size using the alphabet.
+        """
+        return ''.join(random.choice(self.alphabet) for _ in range(size))
+
+    def generate_pair(self, size1, size2):
+        """
+        Generate two random strings of specified sizes.
+        """
+        return self.generate(size1), self.generate(size2)
+
+    def generate_almost_identical_pair(self, size, diff=1):
+        """
+        Generate two strings that are almost identical, differing by `diff` characters.
+        """
+        base = self.generate(size)
+        modified = list(base)
+        for _ in range(diff):
+            idx = random.randint(0, size - 1)
+            modified[idx] = random.choice([c for c in self.alphabet if c != base[idx]])
+        return base, ''.join(modified)
+
 class GraphGenerator(DataGenerator):
     def __init__(self, directed: bool = False, weighted: bool = True):
         self.directed = directed
